@@ -127,7 +127,8 @@ app.route("/party/pessoa")
         req.assert('nome', 'Nome é requerido').notEmpty();
         req.assert('login', 'Login é obrigatorio e deve ser um email válido').isEmail();
         req.assert('idade', 'Idade é obrigatorio').notEmpty();
-        req.assert('sexo', 'Sexo é obrigatorio (M ou F)').notEmpty().len(1, 1);
+        req.assert('sexo', 'Sexo é obrigatorio').notEmpty();
+        req.assert('sexo', 'Sexo deve ser M ou F').len(1, 1);
 
         var errors = req.validationErrors();
         if (errors) {

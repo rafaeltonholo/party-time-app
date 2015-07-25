@@ -1,0 +1,20 @@
+<ion-header-bar class="bar-positive">
+    <div class="buttons">        
+        <h1 class="title">Entrar</h1>
+    </div>
+</ion-header-bar>
+
+<ion-content>
+    <label class="item item-input">
+        <input type="text" placeholder="Login" ng-model="data.login">
+    </label>
+    <label class="item item-input">
+        <input type="password" placeholder="Senha" ng-model="data.password">
+    </label>
+    <button class="button button-block button-positive" ng-click="singin()">
+        Logar
+    </button>
+    <button class="button button-block button-dark" ng-click="redirect('singup')">
+        Cadastrar
+    </button>
+</ion-content>

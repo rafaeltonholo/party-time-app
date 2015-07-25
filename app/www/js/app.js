@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeApp.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -30,16 +30,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-  .state("login", {
-    url: "/login",
-    views: {
-      "login-singup" : {
-        templateUrl: "templates/login-singup.html",
-        controller: "SingUpController"
-      }
-    }
-  })
-  
+    .state("singup", {
+        url: "/login/singup",
+        controller: "LoginController", 
+        templateUrl: "views/login-singup.html"
+    })
+    .state("singin", {
+        url: "/login/singin",
+        controller: "LoginController", 
+        templateUrl: "views/login-singin.html"
+    })
+    
   // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
@@ -89,6 +90,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/perfil');
+  $urlRouterProvider.otherwise('/login/singin');
 
 });
