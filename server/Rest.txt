@@ -1,0 +1,162 @@
+Pessoa:
+	/pessoa
+		POST 	- Insere um novo pessoa
+		INPUT JSON: 
+		{
+			nome: "Nome",
+			login: "nome",
+			senha: "md5password",
+			idade: 18,
+			sexo: "M",
+			avatar: "base64code"
+		}
+		RESPONSE:
+			200: Inserido com sucesso;
+			302: Dado já encontrado no sistema;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+		GET 	- Seleciona todos os pessoas
+		RESPONSE JSON: 
+		{
+			id: 1,
+			nome: "Nome",
+			login: "nome",
+			senha: "md5password",
+			idade: 18,
+			sexo: "M",
+			avatar: "base64code"
+		}	
+		
+	/pessoa/{id}
+		GET 	- Seleciona o pessoa
+		RESPONSE JSON: 
+		{
+			id: 1,
+			nome: "Nome",
+			login: "nome",
+			senha: "md5password",
+			idade: 18,
+			sexo: "M",
+			avatar: "base64code"
+		}
+		PUT 	- Atualiza dados do pessoa
+		INPUT JSON: 
+		{
+			id: 1,
+			nome: "Nome",
+			login: "nome",
+			senha: "md5password",
+			idade: 18,
+			sexo: "M",
+			avatar: "base64code"
+		}
+		RESPONSE:
+			200: Atualizado com sucesso;
+			304: Dado não foi modificado;
+			404: Não encontrado;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+		DELETE	- Deleta pessoa
+		INPUT JSON: { id: 1 }
+		REPONSE
+	
+Evento:
+	/pessoa/{id}/evento
+		POST 	- Insere um novo evento
+		INPUT JSON:
+		{
+			nome: "Nome Evento",
+			endereco: "Endereço Evento",
+			data: 1234412344123,
+			quantidade_maxima: 14,
+			id_pessoa_criador: 1,
+			foto: "base64code"
+		}
+		RESPONSE:
+			200: Inserido com sucesso;
+			302: Dado já encontrado no sistema;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+		GET 	- Seleciona todos os eventos
+		RESPONSE JSON:
+		{
+			id: 1,
+			nome: "Nome Evento",
+			endereco: "Endereço Evento",
+			data: 1234412344123,
+			quantidade_maxima: 14,
+			id_pessoa_criador: 1,
+			foto: "base64code"
+		}
+		
+	/pessoa/{id}/evento/{id}
+		GET 	- Seleciona o evento
+		RESPONSE JSON:
+		{
+			id: 1,
+			nome: "Nome Evento",
+			endereco: "Endereço Evento",
+			data: 1234412344123,
+			quantidade_maxima: 14,
+			id_pessoa_criador: 1,
+			foto: "base64code"
+		}
+		PUT 	- Atualiza dados do evento
+		INPUT JSON:
+		{
+			id: 1,
+			nome: "Nome Evento",
+			endereco: "Endereço Evento",
+			data: 1234412344123,
+			quantidade_maxima: 14,
+			id_pessoa_criador: 1,
+			foto: "base64code"
+		}
+		RESPONSE: 
+			200: Atualizado com sucesso;
+			304: Não foi modificado;
+			404: Não encontrado;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+		DELETE	- Deleta evento	
+		INPUT JSON: { id: 1 }
+		
+Convite:
+	/pessoa/{id}/evento/{id}/convite/{id_convidado}
+		POST 	- Convida o pessoa para o evento
+		INPUT JSON: { id_evento: 1 }
+		RESPONSE:
+			200: Inserido com sucesso;
+			302: Dado já encontrado no sistema;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+			
+	/pessoa/{id}/evento/{id}/convite/{id}
+		DELETE 	- Deleta convite
+		INPUT JSON: { id: 1 }
+		RESPONSE:
+			200: Inserido com sucesso;
+			302: Dado já encontrado no sistema;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
+			
+	/pessoa/{id}/convite
+		GET 	- Consulta meus convites para eventos
+		RESPONSE JSON:
+		{
+			id: 1,
+			id_pessoa: 1,
+			id_pessoa_convidado: 1,
+			id_evento: 1,
+			aceito: true
+		}
+		
+	/pessoa/{id}/convite/{id}
+		PUT 	- Atualiza se o convite foi aceito ou não.
+		INPUT JSON: { aceito: false }
+		RESPONSE: 
+			200: Atualizado com sucesso;
+			304: Não foi modificado;
+			404: Não encontrado;
+			412: Erro de pré-requisito;
+			500: Erro interno do servidor
