@@ -1,4 +1,23 @@
-angular.module('starter.services', [])
+angular.module('partyTimeApp.services', [])
+
+.factory("LoginService", ["$http", function($http) {
+    return {
+        singup: function(data) {
+            return $http.post("http://127.0.0.1:10014/party/pessoa", data, {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            })
+        },
+        singin: function(data) {
+            return $http.post("http://127.0.0.1:10014/party/pessoa/login", data, {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            })
+        }
+    };
+}])
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
