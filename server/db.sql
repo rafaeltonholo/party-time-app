@@ -45,14 +45,9 @@ FOREIGN KEY(id_evento) REFERENCES evento (id);
 
 CREATE TABLE participante_evento (
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	id_evento INT NOT NULL,
 	id_pessoa INT NOT NULL,
 	id_convite INT NOT NULL
 );
-
-ALTER TABLE participante_evento 
-ADD CONSTRAINT FK_participante_evento_evento
-FOREIGN KEY(id_evento) REFERENCES evento (id);
 
 ALTER TABLE participante_evento 
 ADD CONSTRAINT FK_participante_evento_pessoa
