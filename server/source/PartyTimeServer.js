@@ -17,11 +17,30 @@ app.use(expressValidator());
 var connection = require('express-myconnection'),
 	mysql = require('mysql');
 
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
 app.use(
 	connection(mysql, {
 	    host: 'localhost',
-	    user: 'una',
-	    password: 'una123',
+	    user: 'root',
+	    password: 'root',
 	    database: 'party',
 	    debug: false //set true if you wanna see debug logger
 	}, 'request')
@@ -107,8 +126,10 @@ app.route("/party/pessoa")
         //validation	
         req.assert('nome', 'Nome é requerido').notEmpty();
         req.assert('login', 'Login é obrigatorio e deve ser um email válido').isEmail();
+        req.assert('senha', 'Senha é obrigatório').notEmpty();
         req.assert('idade', 'Idade é obrigatorio').notEmpty();
-        req.assert('sexo', 'Sexo é obrigatorio (M ou F)').notEmpty().len(1, 1);
+        req.assert('sexo', 'Sexo é obrigatorio').notEmpty();
+        req.assert('sexo', 'Sexo deve ser M ou F').len(1, 1);
 
         var errors = req.validationErrors();
         if (errors) {
