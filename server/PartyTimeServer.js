@@ -333,7 +333,7 @@ app.route('/party/pessoa/:pessoa_id/evento')
 
     });
 
-app.route("/pessoa/:pessoa_id/evento/:evento_id")
+app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
 
     // Pega o evento de id x da pessoa y
     .get(function (req, res, next) {
@@ -434,9 +434,9 @@ app.route("/pessoa/:pessoa_id/evento/:evento_id")
 app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_id')
     // Insere um convite para a pessoa do id x
     .post(function (req, res, next) {
-        var pessoa_id = res.params.pessoa_id;
-        var evento_id = res.params.evento_id;
-        var pessoa_convidada_id = res.params.pessoa_convidada_id;
+        var pessoa_id = req.params.pessoa_id;
+        var evento_id = req.params.evento_id;
+        var pessoa_convidada_id = req.params.pessoa_convidada_id;
 
         //get data
         var data = {
@@ -484,9 +484,9 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
     // Deleta um convite de um evento para uma pessoa
     .delete(function (req, res, next) {
 
-        var pessoa_id = res.params.pessoa_id;
-        var evento_id = res.params.evento_id;
-        var id = res.params.id;
+        var pessoa_id = req.params.pessoa_id;
+        var evento_id = req.params.evento_id;
+        var id = req.params.id;
 
         //inserting into mysql
         req.getConnection(function (err, conn) {
@@ -511,10 +511,10 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
         });
     }); // fim delete
 
-app.route("/pessoa/:pessoa_id/convite")
+app.route("/party/pessoa/:pessoa_id/convite")
     // Pega os convites de pessoa de id x
     .get(function (req, res, next) {
-        var pessoa_id = res.params.pessoa_id;
+        var pessoa_id = req.params.pessoa_id;
 
         req.getConnection(function (err, conn) {
 
@@ -535,7 +535,31 @@ app.route("/pessoa/:pessoa_id/convite")
         }); // fim getConnection;
     }); // fim get
 
-app.route("/pessoa/:pessoa_id/convite/:convite_id")
+app.route("/party/pessoa/:pessoa_id/convite/pendentes")
+    // Pega os convites de pessoa de id x
+    .get(function (req, res, next) {
+        var pessoa_id = req.params.pessoa_id;
+        
+        req.getConnection(function (err, conn) {
+
+            if (err) return next("Cannot Connect");
+
+            var query = "SELECT COUNT(*) count FROM convite WHERE id_pessoa_convidado = ? AND aceito = 0";
+
+            //verificar o comportamento de quando envia um parametro nulo
+            conn.query(query, [pessoa_id], function (err, rows) {
+
+                if (err) {
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+
+                res.send("" + rows[0].count);
+            }); // fim query
+        }); // fim getConnection;
+    });
+
+app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
     // Atualiza eventos
     .put(function (req, res, next) {
         req.assert('aceito', 'Aceito é requerido').isInt();
@@ -561,7 +585,7 @@ app.route("/pessoa/:pessoa_id/convite/:convite_id")
                 return next("Cannot Connect");
             }
 
-            var query = conn.query("UPDATE convite set ? WHERE id = ? AND id_convidado ] ?", [data, convite_id],
+            var query = conn.query("UPDATE convite set ? WHERE id = ? AND id_convidado = ?", [data, convite_id],
                 function (err, result) {
                     if (err) {
                         console.log(err);
