@@ -1,20 +1,56 @@
+var SERVER_ADDRESS = "http://127.0.0.1:10014";
+
 angular.module('partyTimeApp.services', [])
 
 .factory("LoginService", ["$http", function($http) {
     return {
         singup: function(data) {
-            return $http.post("http://127.0.0.1:10014/party/pessoa", data, {
+            return $http.post("/party/pessoa", data, {
                 header: {
                     "Content-Type": "application/json"
                 }
             })
         },
         singin: function(data) {
-            return $http.post("http://127.0.0.1:10014/party/pessoa/login", data, {
+            return $http.post(SERVER_ADDRESS + "/party/pessoa/login", data, {
                 header: {
                     "Content-Type": "application/json"
                 }
             })
+        }
+    };
+}])
+
+.factory("PerfilService", ["$http", function($http) {
+    return {
+        getConvitesPendentes: function(data) {
+            return $http.get(SERVER_ADDRESS + "/party/pessoa/" + data + "/convite/pendentes", {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+        },
+        getEventosParticipados: function(data) {
+            
+        }
+    };
+}])
+
+.factory("ConviteService", ["$http", function($http) {
+    return { 
+        getConvites: function(data) {
+            return $http.get(SERVER_ADDRESS + "/party/pessoa/" + data.pessoa_id + "/convite/", {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+        },
+        aceitar: function(data) {
+            return $http.put(SERVER_ADDRESS + "/party/pessoa/" + data.pessoa_id + "/convite/" + data.convite_id, data.data, {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
         }
     };
 }])

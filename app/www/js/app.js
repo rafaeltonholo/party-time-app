@@ -50,29 +50,29 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
 
   // Each tab has its own nav history stack:
 
-  .state('tab.perfil', {
-    url: '/perfil',
-    views: {
-      'tab-perfil': {
-        templateUrl: 'templates/tab-perfil.html',
-        controller: 'DashCtrl'
-      }
-    }
-  })
+    .state('tab.perfil', {
+        url: '/perfil',
+        views: {
+            'tab-perfil': {
+                templateUrl: 'templates/tab-perfil.html',
+                controller: 'PerfilController'
+            }
+        }
+    })
 
-  .state('tab.chats', {
-      url: '/chats',
+  .state('tab.convites', {
+      url: '/convites',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+        'tab-convites': {
+          templateUrl: 'templates/tab-convites.html',
+          controller: 'ConviteController'
         }
       }
     })
     .state('tab.chat-detail', {
-      url: '/chats/:chatId',
+      url: '/convites/:chatId',
       views: {
-        'tab-chats': {
+        'tab-convites': {
           templateUrl: 'templates/chat-detail.html',
           controller: 'ChatDetailCtrl'
         }
