@@ -5,7 +5,7 @@ CREATE TABLE pessoa (
 	senha VARCHAR(100) NOT NULL,
 	idade INT NOT NULL,
 	sexo CHAR(1) NULL,
-	avatar BLOB NULL
+	avatar TEXT NULL
 );
 
 CREATE TABLE evento (
@@ -15,7 +15,7 @@ CREATE TABLE evento (
 	data DATETIME NOT NULL,
 	quantidade_maxima INT NOT NULL,
 	id_pessoa_criador INT NOT NULL,
-	foto BLOB NULL
+	foto TEXT NULL
 );
 
 ALTER TABLE evento 

@@ -520,7 +520,13 @@ app.route("/party/pessoa/:pessoa_id/convite")
 
             if (err) return next("Cannot Connect");
 
-            var query = "SELECT * FROM convite WHERE (id_pessoa = ? OR id_pessoa_convidado = ?)";
+            var query = "SELECT " +
+                        "	c.*, ev.nome, ev.endereco, ev.quantidade_maxima," + 
+                        "	ev.data, ev.foto, p.nome nome_convidado " +
+                        "FROM convite c " +
+                        "INNER JOIN evento ev ON ev.id = c.id_evento " +
+                        "LEFT JOIN pessoa p ON ev.id = c.id_pessoa_convidado = p.id " +  
+                        "WHERE (id_pessoa = ? OR id_pessoa_convidado = ?) AND aceito = -1";
 
             //verificar o comportamento de quando envia um parametro nulo
             conn.query(query, [pessoa_id, pessoa_id], function (err, rows) {
@@ -544,7 +550,7 @@ app.route("/party/pessoa/:pessoa_id/convite/pendentes")
 
             if (err) return next("Cannot Connect");
 
-            var query = "SELECT COUNT(*) count FROM convite WHERE id_pessoa_convidado = ? AND aceito = 0";
+            var query = "SELECT COUNT(*) count FROM convite WHERE id_pessoa_convidado = ? AND aceito = -1";
 
             //verificar o comportamento de quando envia um parametro nulo
             conn.query(query, [pessoa_id], function (err, rows) {
@@ -562,7 +568,7 @@ app.route("/party/pessoa/:pessoa_id/convite/pendentes")
 app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
     // Atualiza eventos
     .put(function (req, res, next) {
-        req.assert('aceito', 'Aceito é requerido').isInt();
+        req.assert('aceito', 'Aceito é requerido').isBoolean();
 
         var errors = req.validationErrors();
         if (errors) {
@@ -585,22 +591,67 @@ app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
                 return next("Cannot Connect");
             }
 
-            var query = conn.query("UPDATE convite set ? WHERE id = ? AND id_convidado = ?", [data, convite_id],
-                function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        res.sendStatus(500);
-                        return;
-                    }
+            conn.beginTransaction(function(err) {
+                if (err) { throw err; }
 
-                    if (result.changedRows === 0) {
-                        res.sendStatus(304);
-                    } else {
-                        res.sendStatus(200);
-                    }
-                });
+                console.log(data);
 
-        });
+                conn.query("UPDATE convite SET ? WHERE id = ? AND id_pessoa_convidado = ?", [data, convite_id, pessoa_id],
+                    function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            res.sendStatus(500);
+                            return conn.rollback(function() {
+                                throw err;
+                            });
+                        }
+    
+                        if (result.changedRows === 0) {
+                            res.sendStatus(304);
+                        } else {
+                            var participante_evento = {
+                                id_pessoa: pessoa_id,
+                                id_convite: convite_id
+                            };
+                            if(data.aceito) {
+                                var query = "INSERT INTO participante_evento SET ?";
+                                conn.query(query, participante_evento, function (err, result) {
+                                    if(err) {
+                                        console.log(err);
+                                        res.sendStatus(500);
+                                        return conn.rollback(function() {
+                                            throw err;
+                                        });
+                                    }
+                                    
+                                    conn.commit(function(err) {
+                                        if (err) {
+                                            return conn.rollback(function() {
+                                                throw err;
+                                            });
+                                        }
+                                        
+                                        console.log('success!');
+                                        res.sendStatus(200);
+                                    });
+                                });
+                            } else {
+                               conn.commit(function(err) {
+                                    if (err) {
+                                        return conn.rollback(function() {
+                                            throw err;
+                                        });
+                                    }
+                                    
+                                    console.log('success!');
+                                    res.sendStatus(200);
+                                });
+                            }
+                        } // fim else
+                }); // fim query
+            }); //fim beginTran
+
+        }); //fim getConnection
     }); // fim put
 
 //now we need to apply our router here
