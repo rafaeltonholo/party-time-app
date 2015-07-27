@@ -40,7 +40,7 @@ app.use(
 	connection(mysql, {
 	    host: 'localhost',
 	    user: 'root',
-	    password: 'root',
+	    password: '',
 	    database: 'party',
 	    debug: false //set true if you wanna see debug logger
 	}, 'request')
@@ -315,10 +315,10 @@ app.route('/party/pessoa/:pessoa_id/evento')
 
             var query =
             "SELECT ev.* FROM evento AS ev" +
-            "         WHERE EXISTS(" +
-            "                   SELECT id FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador" +
-            "       ) OR EXISTS(" +
-            "           SELECT * FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND pe.id_evento = ev.id" +
+            "WHERE EXISTS(" +
+            "   SELECT 1 FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador" +
+            ") OR EXISTS(" +
+            "   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND pe.id_evento = ev.id" +
             ");";
             
             conn.query(query, [req.params.pessoa_id, req.params.pessoa_id], function (err, rows) {
@@ -332,6 +332,47 @@ app.route('/party/pessoa/:pessoa_id/evento')
             });
         });
 
+    });
+
+app.route("/party/pessoa/:pessoa_id/evento/participados")
+    .get(function(request, response, next) {
+        request.getConnection(function (err, conn) {
+            if (err) return next("Cannot Connect");
+            
+            var pessoa_id = request.params.pessoa_id;
+            
+            var query =
+                "SELECT " +
+                "    ev.*," + 
+                "	(" +
+                "		SELECT COUNT(1) FROM participante_evento" + 
+                "		WHERE EXISTS(" +
+                "			SELECT 1 FROM convite c" +
+                "			WHERE c.id = participante_evento.id_convite"+  
+                "			AND c.id_evento = ev.id" +
+                "		)" +
+                "	) participantes " +
+                " FROM evento ev " +
+                "WHERE EXISTS(" +
+                "	SELECT 1 FROM convite c" +
+                "	WHERE EXISTS(" +
+                "		SELECT 1 FROM participante_evento pe" +
+                "		WHERE pe.id_convite = c.id AND" +
+                "		pe.id_pessoa = ?" +
+                "	) AND c.id_evento = ev.id" +
+                ") AND data < NOW()";
+                
+            console.log(query);
+            console.log(pessoa_id);
+            conn.query(query, [pessoa_id], function(err, rows) {
+                if (err) {
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+                
+                response.send(rows);
+            });
+        });
     });
 
 app.route("/party/pessoa/:pessoa_id/evento/:evento_id")

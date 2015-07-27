@@ -25,7 +25,16 @@
             Eventos participados
         </div>
          <div class="item item-text-wrap">
-             {{eventosParticipados}}
+             <div class="list">
+                 <ion-item ng-repeat="evento in eventosParticipados" type="item-text-wrap" href="#">
+                     <a class="item clear-padding">
+                         <h3>{{evento.nome}}</h3>
+                         <p>Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
+                         <p>{{evento.data}}</p>
+                         <p>{{evento.endereco}}</p>
+                     </a>
+                 </ion-item>
+             </div>
          </div>
     </div>
   </ion-content>

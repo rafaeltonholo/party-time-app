@@ -113,11 +113,40 @@ angular.module('partyTimeApp.controllers', [])
                 });
         }
         
+        /**
+         * Função que busca todos os eventos já participados pela pessoa
+         * @author Rafael R. Tonholo
+         * @param id - id da pessoa
+         */
+        function getEventosParticipados(id) {
+            
+            PerfilService.getEventosParticipados(id)
+                .success(function(data) {
+                    if(data.length === 0) {
+                        $scope.eventosParticipados = [
+                            {
+                                nome: "Nenhum evento participado"
+                            }
+                        ];
+                    } else {
+                        $scope.eventosParticipados = data;
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    $scope.convitesPendentes = [
+                        {
+                            nome: "Nenhum evento participado"
+                        }
+                    ];
+                });
+        } 
+        
         $scope.convitesPendentes = "0 convite(s) pendente(s)";
         
-        $scope.eventosParticipados = {};
+        $scope.eventosParticipados = [];
         
         getConvitePendentes($scope.perfil.id);
+        getEventosParticipados($scope.perfil.id);
 }])
 
 .controller("ConviteController", ["$scope", "ConviteService", "$ionicPopup", function($scope, ConviteService, $ionicPopup) {

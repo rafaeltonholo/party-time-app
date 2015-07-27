@@ -17,3 +17,7 @@
 	margin-left: 20px;
 	color: darkslategray;
 }
+
+.clear-padding {
+	padding: 0;
+}

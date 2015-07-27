@@ -20,14 +20,11 @@ angular.module('partyTimeApp.services', [])
 .factory("PerfilService", ["$http", function($http) {
     return {
         getConvitesPendentes: function(data) {
-            return $http.get(api.pessoa + "/" + data + "/convite/pendentes", {
-                header: {
-                    "Content-Type": "application/json"
-                }
-            });
+            return $http.get(api.pessoa + "/" + data + "/convite/pendentes", postConfig);
         },
         getEventosParticipados: function(data) {
-            
+            ///party/pessoa/:pessoa_id
+            return $http.get(api.pessoa + "/" + data + "/evento/participados", postConfig);
         }
     };
 }])
@@ -35,21 +32,14 @@ angular.module('partyTimeApp.services', [])
 .factory("ConviteService", ["$http", function($http) {
     return { 
         getConvites: function(data) {
-            return $http.get(api.pessoa + "/" + data.pessoa_id + "/convite/", {
-                header: {
-                    "Content-Type": "application/json"
-                }
-            });
+            return $http.get(api.pessoa + "/" + data.pessoa_id + "/convite/", postConfig);
         },
         aceitar: function(data) {
-            return $http.put(api.pessoa + "/" + data.pessoa_id + "/convite/" + data.convite_id, data.data, {
-                header: {
-                    "Content-Type": "application/json"
-                }
-            });
+            return $http.put(api.pessoa + "/" + data.pessoa_id + "/convite/" + data.convite_id, data.data, postConfig);
         }
     };
 }])
+
 .factory('Chats', function () {
     // Might use a resource here that returns a JSON array
 
