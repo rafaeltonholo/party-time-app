@@ -78,6 +78,144 @@ angular.module('partyTimeApp.controllers', [])
         };
 }])
 
+.controller("PerfilController", ["$scope", "PerfilService", "$state", "$stateParams", "$ionicPopup", 
+    function($scope, PerfilService, $state, $stateParams, $ionicPopup) {
+        // TODO: Verificar como passar este perfil da view de singin para cá.
+        $scope.perfil = {
+            id: 1,
+            nome: "Rafael Ribeiro Tonholo",
+            idade: 22,
+            sexo: "Masculino",
+            avatar: "https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-xfp1/v/t1.0-9/1925284_700811609969826_1050477551_n.jpg?oh=58932513002513dba7e5682cb62eded7&oe=5659D9CB&__gda__=1443809892_c2da02d23ea01b23f6c9f2b7f23d6b89"
+        };
+        
+        /**
+         * Redireciona o usuário para a página de convites, para visualizar todos os convites dele
+         */
+        $scope.showConvites = function() {
+            $state.go("tab.convites");
+        } 
+        
+        /**
+         * Função que verifica e retorna quantos convites a pessoa possue pendente
+         * @author Rafael R. Tonholo
+         * @param id - id do perfil.
+         */
+        function getConvitePendentes (id) {
+            var data = {pessoa_id: id};
+            
+            PerfilService.getConvitesPendentes(data.pessoa_id)
+                .success(function(data) {
+                    $scope.convitesPendentes = data + " convite(s) pendente(s)";
+                })
+                .error(function(data, status, headers, config) {
+                    $scope.convitesPendentes = "0 convite(s) pendente(s)";
+                });
+        }
+        
+        $scope.convitesPendentes = "0 convite(s) pendente(s)";
+        
+        $scope.eventosParticipados = {};
+        
+        getConvitePendentes($scope.perfil.id);
+}])
+
+.controller("ConviteController", ["$scope", "ConviteService", "$ionicPopup", function($scope, ConviteService, $ionicPopup) {
+    // TODO: pegar id da pessoa via login.
+    $scope.pessoa = {
+        id: 1
+    };
+    
+    $scope.convites = [];
+    /**
+     * Mostra um AlertDialog para feedback para o usuário
+     * @author Rafael R. Tonholo
+     * @param title - Título do alerta
+     * @param message - Mensagem do alerta
+     * @param callback - function de callback que será executada quando o usuário apertar OK.
+     */
+    $scope.showAlert = function(title, message, callback) {
+        var alertPoup = $ionicPopup.alert({
+            title: title,
+            template: message
+        });
+        
+        alertPoup.then(function(res) {
+            if(callback !== null && callback !== undefined && callback instanceof Function) callback();
+        })
+    }
+    
+    /**
+     * Busca no servidor os convites relacionados a esta pessoa.
+     * @author Rafael R. Tonholo
+     * @param pessoa - Pessoa que possui os convites.
+     */
+    function getConvites(pessoa) {
+        var data = {
+            pessoa_id: pessoa.id
+        };
+        
+        ConviteService.getConvites(data)
+            .success(function(returnedData) {
+                angular.forEach(returnedData, function(value, key) {
+                    value.owner = data.pessoa_id == value.id_pessoa;
+                    value.convidado = value.owner ? "Anfitrião" : "Convidado";
+                    if(value.owner) value.nome_convidado = "Nome do convidado: " + value.nome_convidado; 
+                });
+                
+                $scope.convites = returnedData; 
+            })
+            .error(function(data, status, headers, config) {
+            });
+    };
+    
+    function removeConvite(convite) {
+        $scope.convites.splice($scope.convites.indexOf(convite), 1);
+    };
+    
+    $scope.aceitar = function(convite) {
+        var data = {
+            pessoa_id: convite.id_pessoa_convidado,
+            convite_id: convite.id,
+            data: {
+                aceito: true
+            }
+        };
+        
+        ConviteService.aceitar(data)
+            .success(function(data) {
+                $scope.showAlert("Convite", "Convite aceito com sucesso!", function() {
+                    removeConvite(convite);
+                });
+            })
+            .error(function(data, status, headers, config) {
+                $scope.showAlert("Convite", "Erro ao aceitar Convite.");
+            });
+    };
+    
+    $scope.rejeitar = function(convite) {
+        var data = {
+            pessoa_id: convite.id_pessoa_convidado,
+            convite_id: convite.id,
+            data: {
+                aceito: false
+            }
+        };
+        
+        ConviteService.aceitar(data)
+            .success(function(data) {
+                $scope.showAlert("Convite", "Convite rejeitado com sucesso!", function() {
+                    removeConvite(convite);
+                });
+            })
+            .error(function(data, status, headers, config) {
+                $scope.showAlert("Convite", "Erro ao rejeitar Convite.");
+            });
+    };
+    
+    getConvites($scope.pessoa);
+}])
+
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {

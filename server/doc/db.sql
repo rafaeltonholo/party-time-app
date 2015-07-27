@@ -5,7 +5,7 @@ CREATE TABLE pessoa (
 	senha VARCHAR(100) NOT NULL,
 	idade INT NOT NULL,
 	sexo CHAR(1) NULL,
-	avatar BLOB NULL
+	avatar TEXT NULL
 );
 
 CREATE TABLE evento (
@@ -15,7 +15,7 @@ CREATE TABLE evento (
 	data DATETIME NOT NULL,
 	quantidade_maxima INT NOT NULL,
 	id_pessoa_criador INT NOT NULL,
-	foto BLOB NULL
+	foto TEXT NULL
 );
 
 ALTER TABLE evento 
@@ -45,14 +45,9 @@ FOREIGN KEY(id_evento) REFERENCES evento (id);
 
 CREATE TABLE participante_evento (
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	id_evento INT NOT NULL,
 	id_pessoa INT NOT NULL,
 	id_convite INT NOT NULL
 );
-
-ALTER TABLE participante_evento 
-ADD CONSTRAINT FK_participante_evento_evento
-FOREIGN KEY(id_evento) REFERENCES evento (id);
 
 ALTER TABLE participante_evento 
 ADD CONSTRAINT FK_participante_evento_pessoa

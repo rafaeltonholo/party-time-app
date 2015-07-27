@@ -1,9 +1,11 @@
+// Tornar o objeto api global.
+var api = new ServerAPI();
 
 angular.module('partyTimeApp.services', [])
 
    //Login service usado para fornecer funções de login
   .factory("LoginService", ["$http", function ($http) {
-    var api = new ServerAPI();
+            
     return {
       singup: function (data) {
         return $http.post(api.pessoa, data, postConfig)
@@ -15,7 +17,40 @@ angular.module('partyTimeApp.services', [])
     };
   }])
 
-  .factory('Chats', function () {
+.factory("PerfilService", ["$http", function($http) {
+    return {
+        getConvitesPendentes: function(data) {
+            return $http.get(api.pessoa + "/" + data + "/convite/pendentes", {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+        },
+        getEventosParticipados: function(data) {
+            
+        }
+    };
+}])
+
+.factory("ConviteService", ["$http", function($http) {
+    return { 
+        getConvites: function(data) {
+            return $http.get(api.pessoa + "/" + data.pessoa_id + "/convite/", {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+        },
+        aceitar: function(data) {
+            return $http.put(api.pessoa + "/" + data.pessoa_id + "/convite/" + data.convite_id, data.data, {
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+        }
+    };
+}])
+.factory('Chats', function () {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -58,12 +93,13 @@ angular.module('partyTimeApp.services', [])
           if (chats[i].id === parseInt(chatId)) {
             return chats[i];
           }
-        }
+        };
         return null;
       }
+      
     };
   });
-  
+
 var postConfig = {
   header: {
     "Content-Type": "application/json"

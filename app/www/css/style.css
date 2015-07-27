@@ -1,1 +1,19 @@
 /* Empty. Add your own CSS if you like */
+.perfil-header {
+	margin: 0 auto;
+	width: 100%;
+}
+
+.perfil-header img.perfil-avatar {
+	max-width: 80px;
+	max-height: 80px;
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+
+.perfil-header h3 {
+	float: left;
+	margin-left: 20px;
+	color: darkslategray;
+}
