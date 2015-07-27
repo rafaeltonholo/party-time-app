@@ -1,34 +1,25 @@
-<ion-header-bar class="bar-positive">
-    <div class="buttons">        
-        <h1 class="title">Cadastrar</h1>
-        <button class="button">Salvar</button>
-    </div>
-</ion-header-bar>
-
-<ion-content>
-    <label class="item item-input">
-      <input type="text" placeholder="Nome" ng-model="data.nome">
-    </label>
-    <label class="item item-input">
-        <input type="text" placeholder="Login" ng-model="data.login">
-    </label>
-    <label class="item item-input">
-        <input type="password" placeholder="Senha" ng-model="data.senha">
-    </label>
-    <label class="item item-input">
-        <span class="input-label">Idade</span>
-        <input type="number" ng-minlength="0" ng-maxlength="150" ng-model="data.idade">
-    </label>
-    <label class="item item-input item-select">
-      <div class="input-label">
-        Sexo
-      </div>
-      <select ng-model="data.sexo">
-        <option selected value="M">Masculino</option>
-        <option value="M">Feminino</option>
-      </select>
-    </label>
-    <button class="button button-block button-positive" ng-click="singup()">
-        Cadastrar
-    </button>
-</ion-content>
+<ion-view view-title="Cadastrar">
+    <ion-content>
+        <label class="item item-input">
+            <input type="text" placeholder="Nome" ng-model="data.nome">
+        </label>
+        <label class="item item-input">
+            <input type="text" placeholder="Login" ng-model="data.login">
+        </label>
+        <label class="item item-input">
+            <input type="password" placeholder="Senha" ng-model="data.senha">
+        </label>
+        <label class="item item-input">
+            <span class="input-label">Idade</span>
+            <input type="number" ng-minlength="0" ng-maxlength="150" ng-model="data.idade">
+        </label>
+        <label class="item item-input item-select">
+            <div class="input-label">Sexo</div>
+            <select ng-model="data.sexo">
+                <option selected value="M">Masculino</option>
+                <option value="M">Feminino</option>
+            </select>
+        </label>
+        <button class="button button-block button-positive" ng-click="singup()">Cadastrar</button>
+    </ion-content>
+</ion-view>

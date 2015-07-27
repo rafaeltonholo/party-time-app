@@ -1,3 +1,4 @@
+/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 angular.module('partyTimeApp.controllers', [])
 
 .controller("LoginController", ["$scope", "LoginService", "$state", "$stateParams", "$ionicPopup", 
