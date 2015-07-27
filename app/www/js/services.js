@@ -23,7 +23,6 @@ angular.module('partyTimeApp.services', [])
             return $http.get(api.pessoa + "/" + data + "/convite/pendentes", postConfig);
         },
         getEventosParticipados: function(data) {
-            ///party/pessoa/:pessoa_id
             return $http.get(api.pessoa + "/" + data + "/evento/participados", postConfig);
         }
     };

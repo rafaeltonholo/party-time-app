@@ -113,6 +113,8 @@ angular.module('partyTimeApp.controllers', [])
                 });
         }
         
+        var eventoVazio = [{ nome: "Nenhum evento participado" }];
+        
         /**
          * Função que busca todos os eventos já participados pela pessoa
          * @author Rafael R. Tonholo
@@ -123,21 +125,13 @@ angular.module('partyTimeApp.controllers', [])
             PerfilService.getEventosParticipados(id)
                 .success(function(data) {
                     if(data.length === 0) {
-                        $scope.eventosParticipados = [
-                            {
-                                nome: "Nenhum evento participado"
-                            }
-                        ];
+                        $scope.eventosParticipados = eventoVazio;
                     } else {
                         $scope.eventosParticipados = data;
                     }
                 })
                 .error(function(data, status, headers, config) {
-                    $scope.convitesPendentes = [
-                        {
-                            nome: "Nenhum evento participado"
-                        }
-                    ];
+                    $scope.convitesPendentes = eventoVazio;
                 });
         } 
         
