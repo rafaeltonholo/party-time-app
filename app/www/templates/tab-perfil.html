@@ -1,41 +1,33 @@
 <ion-view view-title="Perfil">
-  <ion-content class="padding">
-      <div class="card">
-        <div class="item item-avatar">
-            <img src="../img/person.png" ng-src="{{perfil.avatar}}" />
-            <h2>{{perfil.nome}}</h2>
-            <p>{{perfil.idade}} ano(s)</p>
-            <p>{{perfil.sexo}}</p>
+    <ion-content class="padding">
+        <div class="card">
+            <div class="item item-avatar">
+                <img src="../img/person.png" ng-src="{{perfil.avatar}}" />
+                <h2>{{perfil.nome}}</h2>
+                <p>{{perfil.idade}} ano(s)</p>
+                <p>{{perfil.sexo}}</p>
+            </div>
         </div>
-    </div>
-    
-    <div class="card">
-        <div class="item item-divider">
-            Convites Pendentes
+        <div class="card">
+            <div class="item item-divider">Convites Pendentes</div>
+            <div class="item item-text-wrap" ng-click="showConvites()">
+                <h3 id="convites-pendentes">{{convitesPendentes}}</h3>
+            </div>
         </div>
-         <div class="item item-text-wrap" ng-click="showConvites()">
-             <h3 id="convites-pendentes">
-                 {{convitesPendentes}}
-             </h3>
-         </div>
-    </div>
-    
-    <div class="card">
-        <div class="item item-divider">
-            Eventos participados
-        </div>
-         <div class="item item-text-wrap">
-             <div class="list">
-                 <ion-item ng-repeat="evento in eventosParticipados" type="item-text-wrap" href="#">
-                     <a class="item clear-padding">
+        <div class="card">
+            <div class="item item-divider">Eventos participados</div>
+            <div class="item item-text-wrap">
+                <div class="list">
+                    <ion-item ng-repeat="evento in eventosParticipados" type="item-text-wrap" href="#">
+                        <a class="item clear-padding">
                          <h3>{{evento.nome}}</h3>
                          <p>Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
                          <p>{{evento.data}}</p>
                          <p>{{evento.endereco}}</p>
                      </a>
-                 </ion-item>
-             </div>
-         </div>
-    </div>
-  </ion-content>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>

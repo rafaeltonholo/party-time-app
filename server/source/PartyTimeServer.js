@@ -1,8 +1,8 @@
 var express = require('express'),
-	path = require('path'),
-	bodyParser = require('body-parser'),
-	app = express(),
-	expressValidator = require('express-validator');
+    path = require('path'),
+    bodyParser = require('body-parser'),
+    app = express(),
+    expressValidator = require('express-validator');
 
 
 /*Set EJS template Engine*/
@@ -15,7 +15,7 @@ app.use(expressValidator());
 
 /*MySql connection*/
 var connection = require('express-myconnection'),
-	mysql = require('mysql');
+    mysql = require('mysql');
 
 app.use(function (req, res, next) {
 
@@ -37,15 +37,15 @@ app.use(function (req, res, next) {
 });
 
 app.use(
-	connection(mysql, {
-	    host: 'localhost',
-	    user: 'root',
-	    password: '',
-	    database: 'party',
-	    debug: false //set true if you wanna see debug logger
-	}, 'request')
+    connection(mysql, {
+        host: 'localhost',
+        user: 'root',
+        password: 'root',
+        database: 'party',
+        debug: false //set true if you wanna see debug logger
+    }, 'request')
 
-);
+    );
 //gmasters.com.br/party
 app.get('/party', function (req, res) {
     res.send('Bem vindo ao party');
@@ -67,42 +67,45 @@ router.use(function (req, res, next) {
 });
 
 app.route("/party/pessoa/login")
-	.post(function (req, res, next){
-		req.getConnection(function (err, conn) {
-            
-            if (err) return next("Cannot Connect");
-            
+    .post(function (req, res, next) {
+        req.getConnection(function (err, conn) {
+
+            if (err) {
+                console.log(err);
+                return next("Cannot Connect")
+            };
+
             var data = {
                 login: req.body.login,
                 senha: req.body.senha
             };
-            
+
             var sql = 'SELECT * FROM pessoa where login=? and senha=?';
 
             //verificar o comportamento de quando envia um parametro nulo
-            conn.query(sql, [data.login,data.senha], function (err, rows) {
+            conn.query(sql, [data.login, data.senha], function (err, rows) {
 
                 if (err) {
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
-				
-				if(rows.length>0){
-					res.statusCode = 200;
-					res.statusMessage = "Usuário logado";
-					res.send(rows);
-				}else{
-					res.statusMessage = "Login não autorizado";
-					res.sendStatus(401);
-				}
+
+                if (rows.length > 0) {
+                    res.statusCode = 200;
+                    res.statusMessage = "Usuário logado";
+                    res.send(rows);
+                } else {
+                    res.statusMessage = "Login não autorizado";
+                    res.sendStatus(401);
+                }
             });
         });
-	}
-);
+    }
+        );
 app.route("/party/pessoa")
 //Recuperar todas as pessoas cadastradas
     .get(function (req, res, next) {
-        
+
         req.getConnection(function (err, conn) {
 
             if (err) return next("Cannot Connect");
@@ -115,7 +118,7 @@ app.route("/party/pessoa")
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
-                
+
                 res.send(rows);
             });
         });
@@ -151,7 +154,7 @@ app.route("/party/pessoa")
         req.getConnection(function (err, conn) {
 
             if (err) return next("Cannot Connect");
-			
+
             conn.query("INSERT INTO pessoa set ? ", data, function (err, rows) {
 
                 if (err) {
@@ -166,7 +169,7 @@ app.route("/party/pessoa")
 
 app.route('/party/pessoa/:pessoa_id')
 
-    // Pega pessoa por Id
+// Pega pessoa por Id
     .get(function (req, res, next) {
 
         var pessoa_id = req.params.pessoa_id;
@@ -178,7 +181,7 @@ app.route('/party/pessoa/:pessoa_id')
             var sql = 'SELECT * FROM pessoa';
 
             if (pessoa_id) { sql = 'SELECT * FROM pessoa WHERE id = ?'; }
-            
+
             conn.query(sql, [pessoa_id], function (err, rows) {
 
                 if (err) {
@@ -222,7 +225,7 @@ app.route('/party/pessoa/:pessoa_id')
     
 //Deleta a pessoa com id informado
     .delete(function (req, res, next) {
-        
+
         var pessoa_id = req.params.pessoa_id;
         
         //inserting into mysql
@@ -244,7 +247,7 @@ app.route('/party/pessoa/:pessoa_id')
 
 app.route('/party/pessoa/:pessoa_id/evento')
 
-    // Insere um evento para a pessoa do id x
+// Insere um evento para a pessoa do id x
     .post(function (req, res, next) {
         //validações
         req.assert('nome', 'Nome é requerido').notEmpty();
@@ -284,10 +287,10 @@ app.route('/party/pessoa/:pessoa_id/evento')
 
                     var count = rows[0].count;
 
-					console.log('Comparando com dois iguais: '+ (count==0).toString());
-                    console.log('Comparando com três iguais: '+ (count===0).toString());
-                    console.log('Comparando com três iguais em string: '+ (count==='0').toString());
-				
+                    console.log('Comparando com dois iguais: ' + (count == 0).toString());
+                    console.log('Comparando com três iguais: ' + (count === 0).toString());
+                    console.log('Comparando com três iguais em string: ' + (count === '0').toString());
+
                     if (count == 0) {
                         conn.query("INSERT INTO evento set ? ", data, function (err, rows) {
 
@@ -299,8 +302,8 @@ app.route('/party/pessoa/:pessoa_id/evento')
 
                         });
                     } else {
-						res.statusMessage = "Evento já existe";
-						res.sendStatus(400);//Não autorizado
+                        res.statusMessage = "Evento já existe";
+                        res.sendStatus(400);//Não autorizado
                     }
                 });
         });
@@ -314,20 +317,20 @@ app.route('/party/pessoa/:pessoa_id/evento')
             if (err) return next("Cannot Connect");
 
             var query =
-            "SELECT ev.* FROM evento AS ev" +
-            "WHERE EXISTS(" +
-            "   SELECT 1 FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador" +
-            ") OR EXISTS(" +
-            "   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND pe.id_evento = ev.id" +
-            ");";
-            
+                "SELECT ev.* FROM evento AS ev " +
+                "WHERE EXISTS(" +
+                "   SELECT 1 FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador" +
+                ") OR EXISTS(" +
+                "   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND pe.id_evento = ev.id" +
+                ");";
+
             conn.query(query, [req.params.pessoa_id, req.params.pessoa_id], function (err, rows) {
 
                 if (err) {
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
-                
+
                 res.send(rows);
             });
         });
@@ -335,20 +338,20 @@ app.route('/party/pessoa/:pessoa_id/evento')
     });
 
 app.route("/party/pessoa/:pessoa_id/evento/participados")
-    .get(function(request, response, next) {
+    .get(function (request, response, next) {
         request.getConnection(function (err, conn) {
             if (err) return next("Cannot Connect");
-            
+
             var pessoa_id = request.params.pessoa_id;
-            
+
             var query =
                 "SELECT " +
-                "    ev.*," + 
+                "    ev.*," +
                 "	(" +
-                "		SELECT COUNT(1) FROM participante_evento" + 
+                "		SELECT COUNT(1) FROM participante_evento" +
                 "		WHERE EXISTS(" +
                 "			SELECT 1 FROM convite c" +
-                "			WHERE c.id = participante_evento.id_convite"+  
+                "			WHERE c.id = participante_evento.id_convite" +
                 "			AND c.id_evento = ev.id" +
                 "		)" +
                 "	) participantes " +
@@ -361,15 +364,15 @@ app.route("/party/pessoa/:pessoa_id/evento/participados")
                 "		pe.id_pessoa = ?" +
                 "	) AND c.id_evento = ev.id" +
                 ") AND data < NOW()";
-                
+
             console.log(query);
             console.log(pessoa_id);
-            conn.query(query, [pessoa_id], function(err, rows) {
+            conn.query(query, [pessoa_id], function (err, rows) {
                 if (err) {
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
-                
+
                 response.send(rows);
             });
         });
@@ -377,7 +380,7 @@ app.route("/party/pessoa/:pessoa_id/evento/participados")
 
 app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
 
-    // Pega o evento de id x da pessoa y
+// Pega o evento de id x da pessoa y
     .get(function (req, res, next) {
 
         req.getConnection(function (err, conn) {
@@ -399,7 +402,7 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
         });
     })
     
-    // Atualiza eventos
+// Atualiza eventos
     .put(function (req, res, next) {
         req.assert('nome', 'Nome é requerido').notEmpty();
         req.assert('endereco', 'Endereço é obrigatorio').notEmpty();
@@ -446,7 +449,7 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
 
         });
     }) // fim put
-    // Deleta eventos
+// Deleta eventos
     .delete(function (req, res, next) {
 
         var evento_id = req.params.evento_id;
@@ -474,7 +477,7 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
     }); // fim delete
 
 app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_id')
-    // Insere um convite para a pessoa do id x
+// Insere um convite para a pessoa do id x
     .post(function (req, res, next) {
         var pessoa_id = req.params.pessoa_id;
         var evento_id = req.params.evento_id;
@@ -523,7 +526,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
                 });
         });
     })
-    // Deleta um convite de um evento para uma pessoa
+// Deleta um convite de um evento para uma pessoa
     .delete(function (req, res, next) {
 
         var pessoa_id = req.params.pessoa_id;
@@ -554,7 +557,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
     }); // fim delete
 
 app.route("/party/pessoa/:pessoa_id/convite")
-    // Pega os convites de pessoa de id x
+// Pega os convites de pessoa de id x
     .get(function (req, res, next) {
         var pessoa_id = req.params.pessoa_id;
 
@@ -563,12 +566,12 @@ app.route("/party/pessoa/:pessoa_id/convite")
             if (err) return next("Cannot Connect");
 
             var query = "SELECT " +
-                        "	c.*, ev.nome, ev.endereco, ev.quantidade_maxima," + 
-                        "	ev.data, ev.foto, p.nome nome_convidado " +
-                        "FROM convite c " +
-                        "INNER JOIN evento ev ON ev.id = c.id_evento " +
-                        "LEFT JOIN pessoa p ON ev.id = c.id_pessoa_convidado = p.id " +  
-                        "WHERE (id_pessoa = ? OR id_pessoa_convidado = ?) AND aceito = -1";
+                "	c.*, ev.nome, ev.endereco, ev.quantidade_maxima," +
+                "	ev.data, ev.foto, p.nome nome_convidado " +
+                "FROM convite c " +
+                "INNER JOIN evento ev ON ev.id = c.id_evento " +
+                "LEFT JOIN pessoa p ON ev.id = c.id_pessoa_convidado = p.id " +
+                "WHERE (id_pessoa = ? OR id_pessoa_convidado = ?) AND aceito = -1";
 
             //verificar o comportamento de quando envia um parametro nulo
             conn.query(query, [pessoa_id, pessoa_id], function (err, rows) {
@@ -584,10 +587,10 @@ app.route("/party/pessoa/:pessoa_id/convite")
     }); // fim get
 
 app.route("/party/pessoa/:pessoa_id/convite/pendentes")
-    // Pega os convites de pessoa de id x
+// Pega os convites de pessoa de id x
     .get(function (req, res, next) {
         var pessoa_id = req.params.pessoa_id;
-        
+
         req.getConnection(function (err, conn) {
 
             if (err) return next("Cannot Connect");
@@ -608,7 +611,7 @@ app.route("/party/pessoa/:pessoa_id/convite/pendentes")
     });
 
 app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
-    // Atualiza eventos
+// Atualiza eventos
     .put(function (req, res, next) {
         req.assert('aceito', 'Aceito é requerido').isBoolean();
 
@@ -633,7 +636,7 @@ app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
                 return next("Cannot Connect");
             }
 
-            conn.beginTransaction(function(err) {
+            conn.beginTransaction(function (err) {
                 if (err) { throw err; }
 
                 console.log(data);
@@ -643,11 +646,11 @@ app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
                         if (err) {
                             console.log(err);
                             res.sendStatus(500);
-                            return conn.rollback(function() {
+                            return conn.rollback(function () {
                                 throw err;
                             });
                         }
-    
+
                         if (result.changedRows === 0) {
                             res.sendStatus(304);
                         } else {
@@ -655,42 +658,42 @@ app.route("/party/pessoa/:pessoa_id/convite/:convite_id")
                                 id_pessoa: pessoa_id,
                                 id_convite: convite_id
                             };
-                            if(data.aceito) {
+                            if (data.aceito) {
                                 var query = "INSERT INTO participante_evento SET ?";
                                 conn.query(query, participante_evento, function (err, result) {
-                                    if(err) {
+                                    if (err) {
                                         console.log(err);
                                         res.sendStatus(500);
-                                        return conn.rollback(function() {
+                                        return conn.rollback(function () {
                                             throw err;
                                         });
                                     }
-                                    
-                                    conn.commit(function(err) {
+
+                                    conn.commit(function (err) {
                                         if (err) {
-                                            return conn.rollback(function() {
+                                            return conn.rollback(function () {
                                                 throw err;
                                             });
                                         }
-                                        
+
                                         console.log('success!');
                                         res.sendStatus(200);
                                     });
                                 });
                             } else {
-                               conn.commit(function(err) {
+                                conn.commit(function (err) {
                                     if (err) {
-                                        return conn.rollback(function() {
+                                        return conn.rollback(function () {
                                             throw err;
                                         });
                                     }
-                                    
+
                                     console.log('success!');
                                     res.sendStatus(200);
                                 });
                             }
                         } // fim else
-                }); // fim query
+                    }); // fim query
             }); //fim beginTran
 
         }); //fim getConnection
