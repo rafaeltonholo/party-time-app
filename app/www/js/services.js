@@ -1,13 +1,35 @@
+/**
+ * Objeto que representa a configuração dos métodos post
+ * @author Kelvin R. Ferreira
+ */
+var postConfig = { header: { "Content-Type": "application/json" } };
+
+/**
+ * Objeto que representa as urls da nossa api
+ * @author Kelvin R. Ferreira
+ */
+function ServerAPI() {
+  //Declara url base para a api do server
+  var serverRootUrl = "http://127.0.0.1:10014/party/";
+
+  return {
+    //Declara propriedades com endpoint de cada recurso da api
+    pessoa: serverRootUrl + "pessoa",
+    login: serverRootUrl + "pessoa/login",
+    pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento"
+  }
+};
+
 // Tornar o objeto api global.
-var api = new ServerAPI();
+var api = ServerAPI();
 
 angular.module('partyTimeApp.services', [])
 
-  /**
-   * Factory do objeto $localStorage. Objeto para fácil acesso dos controllers aos dados armazenados baseado em chave/valor.
-   * @author Kelvin R. Ferreira
-   * @param $window - objeto window enviado para a factory. É utilizado o localStorage deste objeto
-   */
+/**
+ * Factory do objeto $localStorage. Objeto para fácil acesso dos controllers aos dados armazenados baseado em chave/valor.
+ * @author Kelvin R. Ferreira
+ * @param $window - objeto window enviado para a factory. É utilizado o localStorage deste objeto
+ */
   .factory('$localstorage', ['$window', function ($window) {
     return {
       set: function (key, value) {
@@ -25,10 +47,10 @@ angular.module('partyTimeApp.services', [])
     }
   }])
 
-  /**
-   * Login service usado para fornecer funções de login
-   * @author Rafael R. Tonholo
-   */
+/**
+ * Login service usado para fornecer funções de login
+ * @author Rafael R. Tonholo
+ */
   .factory("LoginService", ["$http", function ($http) {
 
     return {
@@ -42,10 +64,10 @@ angular.module('partyTimeApp.services', [])
     };
   }])
 
-  /**
-   * Perfil service usado para fornecer funções do perfil
-   * @author Rafael R. Tonholo
-   */
+/**
+ * Perfil service usado para fornecer funções do perfil
+ * @author Rafael R. Tonholo
+ */
   .factory("PerfilService", ["$http", function ($http) {
     return {
       getConvitesPendentes: function (data) {
@@ -57,10 +79,10 @@ angular.module('partyTimeApp.services', [])
     };
   }])
 
-  /**
-   * Convite service usado para fornecer funções do convite
-   * @author Rafael R. Tonholo
-   */
+/**
+ * Convite service usado para fornecer funções do convite
+ * @author Rafael R. Tonholo
+ */
   .factory("ConviteService", ["$http", function ($http) {
     return {
       getConvites: function (data) {
@@ -74,23 +96,12 @@ angular.module('partyTimeApp.services', [])
       },
       getEventosParticipados: function (data) { }
     };
-  }]);
-  
-/**
- * Objeto que representa a configuração dos métodos post
- * @author Kelvin R. Ferreira
- */
-var postConfig = { header: { "Content-Type": "application/json" } };
+  }])
 
-/**
- * Objeto que representa as urls da nossa api
- * @author Kelvin R. Ferreira
- */
-function ServerAPI() {
-  //Declara url base para a api do server
-  var serverRootUrl = "http://127.0.0.1:10014/party/";
-  
-  //Declara propriedades com endpoint de cada recurso da api
-  this.pessoa = serverRootUrl + "pessoa";
-  this.login = serverRootUrl + "pessoa/login";
-};
+  .factory("EventoService", ["$http", function ($http) {
+    return {
+      getEventos: function (idPessoa) {
+        return $http.get(api.pessoaEventos.replace('{id_pessoa}', idPessoa), postConfig);
+      }
+    };
+  }]);

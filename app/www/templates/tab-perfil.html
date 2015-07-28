@@ -5,7 +5,8 @@
                 <img src="../img/person.png" ng-src="{{perfil.avatar}}" />
                 <h2>{{perfil.nome}}</h2>
                 <p>{{perfil.idade}} ano(s)</p>
-                <p>{{perfil.sexo}}</p>
+                <p ng-show="{{perfil.sexo == 'm'}}">Macho</p>
+                <p ng-show="{{perfil.sexo == 'f'}}">Mulé</p>
             </div>
         </div>
         <div class="card">

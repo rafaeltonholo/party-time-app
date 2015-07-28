@@ -236,8 +236,11 @@ angular.module('partyTimeApp.controllers', [])
             getConvites($scope.pessoa);
         }])
 
-    .controller("EventoController", function ($scope) {
-        $scope.Kelvin = {
-            nome : "Kelvin"
-        }
+    .controller("EventoController", function ($scope, $localstorage, EventoService) {
+        var currentUser = $localstorage.getObject("currentUser");
+        
+        EventoService.getEventos(currentUser.id)
+        .success(function(eventos){
+            $scope.currentUserEvents = eventos;
+        });
      });

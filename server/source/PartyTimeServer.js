@@ -286,13 +286,11 @@ app.route('/party/pessoa/:pessoa_id/evento')
                     }
 
                     var count = rows[0].count;
-
-                    console.log('Comparando com dois iguais: ' + (count == 0).toString());
-                    console.log('Comparando com três iguais: ' + (count === 0).toString());
-                    console.log('Comparando com três iguais em string: ' + (count === '0').toString());
-
+                    
                     if (count == 0) {
-                        conn.query("INSERT INTO evento set ? ", data, function (err, rows) {
+                        console.log('dados a serem inseridos:');
+                        console.log(data);
+                        conn.query("INSERT INTO evento set ?", data, function (err, rows) {
 
                             if (err) {
                                 console.log(err);
@@ -538,7 +536,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
 
             if (err) return next("Cannot Connect");
 
-            var query = conn.query("DELETE convite WHERE id_evento = ? AND id_pessoa_convidado = ? AND id_pessoa = ?", [evento_id, id, pessoa_id],
+            conn.query("DELETE convite WHERE id_evento = ? AND id_pessoa_convidado = ? AND id_pessoa = ?", [evento_id, id, pessoa_id],
                 function (err, result) {
 
                     if (err) {
