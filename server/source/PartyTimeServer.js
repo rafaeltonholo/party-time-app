@@ -40,7 +40,7 @@ app.use(
     connection(mysql, {
         host: 'localhost',
         user: 'root',
-        password: 'root',
+        password: '',
         database: 'party',
         debug: false //set true if you wanna see debug logger
     }, 'request')
@@ -319,7 +319,11 @@ app.route('/party/pessoa/:pessoa_id/evento')
                 "WHERE EXISTS(" +
                 "   SELECT 1 FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador" +
                 ") OR EXISTS(" +
-                "   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND pe.id_evento = ev.id" +
+                "   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND" +
+                "   EXISTS(" +
+                "	   SELECT 1 FROM convite c WHERE c.id = pe.id_convite " +
+                "	   AND c.id_evento = ev.id " +
+                "   )" +
                 ");";
 
             conn.query(query, [req.params.pessoa_id, req.params.pessoa_id], function (err, rows) {
