@@ -1,12 +1,12 @@
-<ion-view view-title="Perfil">
+<ion-view view-title="Detalhe Convite">
     <ion-content class="padding">
         <div class="card">
             <div class="item item-avatar">
-                <img src="../img/person.png" ng-src="{{perfil.avatar}}" />
+                <img src="../img/calendar.png" class="border" ng-src="{{convite.evento.foto}}" />
                 <h2>{{perfil.nome}}</h2>
                 <p>{{perfil.idade}} ano(s)</p>
-                <p ng-show="{{perfil.sexo.toUpper() == 'm'}}">Macho</p>
-                <p ng-show="{{perfil.sexo.toUpper() == 'f'}}">Mulé</p>
+                <p ng-show="{{perfil.sexo == 'm'}}">Macho</p>
+                <p ng-show="{{perfil.sexo == 'f'}}">Mulé</p>
             </div>
         </div>
         <div class="card">
