@@ -56,3 +56,15 @@ FOREIGN KEY(id_pessoa) REFERENCES pessoa (id);
 ALTER TABLE participante_evento 
 ADD CONSTRAINT FK_participante_evento_convite
 FOREIGN KEY(id_convite) REFERENCES convite (id);
+
+
+SELECT ev.* FROM evento AS ev
+WHERE EXISTS(
+   SELECT 1 FROM pessoa WHERE pessoa.id = ? AND pessoa.id = ev.id_pessoa_criador
+) OR EXISTS(
+   SELECT 1 FROM participante_evento AS pe WHERE pe.id_pessoa = ? AND 
+   EXISTS(
+	   SELECT 1 FROM convite c WHERE c.id = pe.id_convite 
+	   AND c.id_evento = ev.id 
+   )
+);
