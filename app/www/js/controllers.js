@@ -345,24 +345,30 @@ angular.module('partyTimeApp.controllers', [])
         $scope.evento = {};
         $scope.convidadosEvento = [];
 
-        var convidadosVazio = [{ nome: "Não há convidados para este evento!" }];
+        var convidadosVazio = [{ nome: "Não há convidados para este evento!", hide: true }];
 
+        // Busca os dados do evento.
         EventoService.get($stateParams.eventoId)
             .success(function (data) {
                 $scope.evento = data;
+                // Busca os participantes do evento solicitado
+                EventoService.getParticipantesEvento($scope.evento.id)
+                    .success(function (data) {
+                        if (data.length === 0) {
+                            $scope.convidadosEvento = convidadosVazio;
+                        } else {
+                            $scope.convidadosEvento = data;
+                            $scope.convidadosEvento.forEach(function (element) {
+                                element.sexo = element.sexo.toLowerCase() === "m" ? "Macho" : "Muié";
+                            })
+                        }
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.convidadosEvento = convidadosVazio;
+                    });
             })
             .error(function (data, status, headers, config) {
                 console.error(data);
-            });
-
-        // Busca os participantes do evento solicitado
-        EventoService.getParticipantesEvento(evento.id)
-            .success(function (data) {
-                $scope.convidadosEvento = data;
-                $scope.convidadosEvento.sexo = $scope.convidadosEvento.sexo.toLowerCase() === "m" ? "Macho" : "Muié";
-            })
-            .error(function (data, status, headers, config) {
-                $scope.convidadosEvento = convidadosVazio;
             });
 
     });

@@ -385,6 +385,7 @@ app.route("/party/pessoa/:pessoa_id/evento/participados")
 // Pega o evento de id x
 app.route("/party/evento/:evento_id")
     .get(function (req, res, next) {
+        var evento_id = req.params.evento_id;
 
         req.getConnection(function (err, conn) {
 
@@ -393,14 +394,14 @@ app.route("/party/evento/:evento_id")
             var query = "SELECT ev.* FROM evento AS ev WHERE id = ?";
 
             //verificar o comportamento de quando envia um parametro nulo
-            conn.query(query, [req.params.pessoa_id], function (err, rows) {
+            conn.query(query, [evento_id], function (err, rows) {
 
                 if (err) {
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
 
-                res.send(rows);
+                res.send(rows[0]);
             });
         });
     });
@@ -484,7 +485,7 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
 app.route('/party/evento/participantes/:evento_id')
     .get(function (request, response, next) {
         var evento_id = request.params.evento_id;
-
+        console.log(evento_id);
         request.getConnection(function (err, conn) {
 
             if (err) return next("Cannot Connect");
@@ -510,6 +511,8 @@ app.route('/party/evento/participantes/:evento_id')
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
+
+                console.log(rows);
 
                 response.send(rows);
             });
