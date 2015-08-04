@@ -16,7 +16,9 @@ function ServerAPI() {
     //Declara propriedades com endpoint de cada recurso da api
     pessoa: serverRootUrl + "pessoa",
     login: serverRootUrl + "pessoa/login",
-    pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento"
+    pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
+    
+    addEvento : serverRootUrl + "pessoa/{id_pessoa}/evento"
   }
 };
 
@@ -102,6 +104,9 @@ angular.module('partyTimeApp.services', [])
     return {
       getEventos: function (idPessoa) {
         return $http.get(api.pessoaEventos.replace('{id_pessoa}', idPessoa), postConfig);
+      },
+      addEvento: function (idPessoa, data){
+        return $http.post(api.addEvento.replace('{id_pessoa}', idPessoa), data, postConfig)
       }
     };
   }]);

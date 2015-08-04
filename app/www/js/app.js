@@ -86,7 +86,7 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
       .state('tab.eventos-add', {
         url: '/eventos/add',
         views: {
-          'tab-eventos-add': {
+          'tab-eventos': {
             templateUrl: 'templates/add-evento.html',
             controller: "AddEventoController"
           }
