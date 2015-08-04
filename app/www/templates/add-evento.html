@@ -1,12 +1,29 @@
-<ion-view view-title="Login">
+<ion-view view-title="Adicionar Evento">
+    <ion-nav-buttons side="right">
+        <button class="button button-icon ion-checkmark-circled" ng-click="addEvent()"></button>
+    </ion-nav-buttons>
     <ion-content>
-        <label class="item item-input">
-            <input type="text" placeholder="Login" ng-model="data.login">
-        </label>
-        <label class="item item-input">
-            <input type="password" placeholder="Senha" ng-model="data.password">
-        </label>
-        <button class="button button-block button-positive" ng-click="singin()">Logar</button>
-        <button class="button button-block button-dark" ng-click="redirect('singup')">Cadastrar</button>
+        <div class="list">
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Nome do evento</span>
+                <input type="text" placeholder="Encontro com a galera" ng-model="data.nome">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Endereco</span>
+                <input type="text" placeholder="Rua zero" ng-model="data.endereco">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Quantidade máxima</span>
+                <input type="number" ng-minlength="0" placeholder="15" ng-model="data.quantidadeMaxima">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Data do evento</span>
+                <input type="text" ng-model="data.dataEvento" placeholder="25/12/2020">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Link Foto</span>
+                <input type="url" ng-model="data.linkUrl" placeholder="http://minhaimagem.com/eu.jpg">
+            </label>
+        </div>
     </ion-content>
 </ion-view>

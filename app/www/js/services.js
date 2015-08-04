@@ -18,7 +18,9 @@ function ServerAPI() {
     login: serverRootUrl + "pessoa/login",
     pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
     evento: serverRootUrl + "evento/{id_evento}",
-    eventoParticipantes: serverRootUrl + "evento/participantes/{id_evento}"
+    eventoParticipantes: serverRootUrl + "evento/participantes/{id_evento}",
+    pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
+    addEvento: serverRootUrl + "pessoa/{id_pessoa}/evento"
   }
 };
 
@@ -123,6 +125,9 @@ angular.module('partyTimeApp.services', [])
          */
         getParticipantesEvento: function (idEvento) {
             return $http.get(api.eventoParticipantes.replace("{id_evento}", idEvento), postConfig);
-        }
+        },
+		addEvento: function (idPessoa, data){
+        	return $http.post(api.addEvento.replace('{id_pessoa}', idPessoa), data, postConfig)
+      	}
     };
   }]);

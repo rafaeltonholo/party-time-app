@@ -265,25 +265,89 @@ angular.module('partyTimeApp.controllers', [])
             $state.go('tab.eventos-add');
         }
         
-        //Recupera os eventos do usuário atual
-        EventoService.getEventos(currentUser.id)
-            .success(function (eventos) {
+        /**
+         * Função para recarregar os dados da tela de eventos
+         * @author Kelvin
+         */
+        $scope.refreshEvents = function(){
+            RetrieveUserEvents();
+        }
+        
+        function RetrieveUserEvents() {
+            //Recupera os eventos do usuário atual
+            EventoService.getEventos(currentUser.id)
+                .success(function (eventos) {
 
-                eventos.forEach(function (element) {
-                    element.data = (new Date(element.data)).toLocaleDateString()
-                }, this);
+                    eventos.forEach(function (element) {
+                        element.data = (new Date(element.data)).toLocaleDateString()
+                    }, this);
 
-                $scope.currentUserEvents = eventos;
-            });
+                    $scope.currentUserEvents = eventos;
+                });
+        }
+        //Realiza a primeira carga
+        RetrieveUserEvents();
     })
 
-    .controller("EventoDetailController", function($scope, $state, $localstorage, EventoService) {
+    .controller("AddEventoController", function ($scope, $state, $ionicPopup, $localstorage, EventoService) {
+        $scope.data = {};
+
+        /**
+         * Função para adicionar um novo evento
+         * @author Kelvin
+         */
+        $scope.addEvent = function () {
+            var currentUser = $localstorage.getObject("currentUser");
+
+            var evento = {
+                nome: $scope.data.nome,
+                endereco: $scope.data.endereco,
+                data: getDate($scope.data.dataEvento),
+                quantidade_maxima: $scope.data.quantidadeMaxima,
+                id_pessoa_criador: currentUser.id,
+                foto: $scope.data.linkUrl
+            };
+
+            EventoService.addEvento(currentUser.id, evento)
+                .success(function (res) {
+                    $state.go('tab.eventos')
+                })
+                .error(function (res) {
+
+                    if (res.length > 0) {
+                        var msg = "";
+                        for (var i = 0; i < res.length; i++) {
+                            msg += res[i].msg;
+                            msg += "<br/>"
+                        }
+
+                        var alertPopup = $ionicPopup.alert({
+                            title: "Erro",
+                            template: msg
+                        });
+
+                        alertPopup.then(function (res) { })
+                    }
+                });
+                
+            /**
+             * Função que transforma texto em uma data no formato aceito pela api
+             * yyyy-MM-dd
+             * @author Kelvin
+             */
+            function getDate(text) {
+                var date = new Date(text)
+                return date.toISOString().slice(0, 10);
+            }
+        };
+    })
+    .controller("EventoDetailController", function ($scope, $stateParams, $state, $localstorage, EventoService) {
         $scope.evento = {};
         $scope.convidadosEvento = [];
 
         var convidadosVazio = [{ nome: "Não há convidados para este evento!" }];
 
-        EventoService.get($state.eventoId)
+        EventoService.get($stateParams.eventoId)
             .success(function (data) {
                 $scope.evento = data;
             })
@@ -301,6 +365,4 @@ angular.module('partyTimeApp.controllers', [])
                 $scope.convidadosEvento = convidadosVazio;
             });
 
-    })
-
-    .controller("AddEventoController", function ($scope) {});
+    });
