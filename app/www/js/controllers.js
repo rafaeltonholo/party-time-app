@@ -355,10 +355,17 @@ angular.module('partyTimeApp.controllers', [])
              * Função que transforma texto em uma data no formato aceito pela api
              * yyyy-MM-dd
              * @author Kelvin
+             * @updated Rafael
              */
             function getDate(text) {
-                var date = new Date(text)
-                return date.toISOString().slice(0, 10);
+                var date = text.split("/");
+                if (date[0].length != 2) throw new "DayInvalid";
+                if (date[1].length != 2) throw new "MonthInvalid";
+                if (date[2].length != 4) throw new "YearInvalid";
+
+                var newDate = new Date(parseInt(date[2]), parseInt(date[1]) - 1, parseInt(date[0]));
+
+                return newDate.toISOString().slice(0, 10);
             }
         };
     })
