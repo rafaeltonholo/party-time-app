@@ -5,8 +5,9 @@
                 <img src="../img/person.png" ng-src="{{perfil.avatar}}" />
                 <h2>{{perfil.nome}}</h2>
                 <p>{{perfil.idade}} ano(s)</p>
-                <p ng-show="{{perfil.sexo.toUpper() == 'm'}}">Macho</p>
-                <p ng-show="{{perfil.sexo.toUpper() == 'f'}}">Mulé</p>
+                <!--<p ng-show="{{perfil.sexo.toUpper() == 'm'}}">Macho</p>
+                <p ng-show="{{perfil.sexo.toUpper() == 'f'}}">Mulé</p>-->
+                <p>{{perfil.sexoDescricao}}</p>
             </div>
         </div>
         <div class="card">
@@ -22,9 +23,9 @@
                     <ion-item ng-repeat="evento in eventosParticipados" type="item-text-wrap" href="#">
                         <a class="item clear-padding">
                          <h3>{{evento.nome}}</h3>
-                         <p>Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
-                         <p>{{evento.data}}</p>
-                         <p>{{evento.endereco}}</p>
+                         <p ng-show="{{evento.show}}">Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
+                         <p ng-show="{{evento.show}}">{{evento.data}}</p>
+                         <p ng-show="{{evento.show}}">{{evento.endereco}}</p>
                      </a>
                     </ion-item>
                 </div>

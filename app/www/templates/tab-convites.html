@@ -1,17 +1,17 @@
 <ion-view view-title="Convites">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="convite in convites" type="item-text-wrap"
-      href="#/tab/convites/{{convite.id}}">
-        <img ng-src="{{convite.foto}}">
-        <h3>{{convite.nome}}</h3>
-        <p>{{convite.convidado}}</p>
-        <p>{{convite.nome_convidado}}</p>
-        <p>Endereço: {{convite.endereco}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-        <ion-option-button class="button-balanced" ng-click="aceitar(convite)" ng-disabled="{{convite.owner}}">Aceitar</ion-option-button>
-        <ion-option-button class="button-assertive" ng-click="rejeitar(convite)" ng-disabled="{{convite.owner}}">Rejeitar</ion-option-button>
-      </ion-item>
-    </ion-list>
-  </ion-content>
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="convite in convites" type="item-text-wrap"
+                      href="#/tab/convites/{{convite.id}}">
+                <img src="../img/calendar.png" ng-src="{{convite.foto}}">
+                <h3>{{convite.nome}}</h3>
+                <p>{{convite.convidado}}</p>
+                <p>{{convite.nome_convidado}}</p>
+                <p>Endereço: {{convite.endereco}}</p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+                <ion-option-button class="button-balanced" ng-click="aceitar(convite)" ng-disabled="{{convite.owner}}">Aceitar</ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="rejeitar(convite)" ng-disabled="{{convite.owner}}">Rejeitar</ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>
