@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts"/>
 angular.module('partyTimeApp.controllers', [])
 
-    
+
     .controller("LoginController", ["$scope", "LoginService", "$state", "$stateParams", "$ionicPopup", "$localstorage",
         function ($scope, LoginService, $state, $stateParams, $ionicPopup, $localstorage) {
             $scope.data = {};
@@ -86,14 +86,24 @@ angular.module('partyTimeApp.controllers', [])
     .controller("PerfilController", ["$scope", "PerfilService", "$state", "$stateParams", "$ionicPopup", "$localstorage",
         function ($scope, PerfilService, $state, $stateParams, $ionicPopup, $localstorage) {
 
-            $scope.perfil = $localstorage.getObject("currentUser")
+            $scope.perfil = $localstorage.getObject("currentUser");
+
+            $scope.perfil.sexo = getSexo($scope.perfil.sexo);
+            
             /**
              * Redireciona o usuário para a página de convites, para visualizar todos os convites dele
              */
             $scope.showConvites = function () {
                 $state.go("tab.convites");
-            } 
-        
+            }
+            
+            /**
+             * Retorna se o sexo é macho ou mulé
+             */
+            function getSexo(s) {
+                return s.toLowerCase() == 'm' ? 'Macho' : "Mulé";
+            }
+            
             /**
              * Função que verifica e retorna quantos convites a pessoa possue pendente
              * @author Rafael R. Tonholo
@@ -236,11 +246,28 @@ angular.module('partyTimeApp.controllers', [])
             getConvites($scope.pessoa);
         }])
 
-    .controller("EventoController", function ($scope, $localstorage, EventoService) {
+    .controller("EventoController", function ($scope, $state, $localstorage, EventoService) {
+        //Recupera o usuário atual
         var currentUser = $localstorage.getObject("currentUser");
+
+        /**
+         * Função para redirecionar para adicionar um evento
+         * @author Kelvin
+         */
+        $scope.goAddEvent = function () {
+            $state.go('tab.eventos-add');
+        }
         
+        //Recupera os eventos do usuário atual
         EventoService.getEventos(currentUser.id)
-        .success(function(eventos){
-            $scope.currentUserEvents = eventos;
-        });
-     });
+            .success(function (eventos) {
+
+                eventos.forEach(function (element) {
+                    element.data = (new Date(element.data)).toLocaleDateString()
+                }, this);
+
+                $scope.currentUserEvents = eventos;
+            });
+    })
+
+    .controller("AddEventoController", function ($scope) {});
