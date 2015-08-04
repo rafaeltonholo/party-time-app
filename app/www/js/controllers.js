@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts"/>
 angular.module('partyTimeApp.controllers', [])
 
-    
+
     .controller("LoginController", ["$scope", "LoginService", "$state", "$stateParams", "$ionicPopup", "$localstorage",
         function ($scope, LoginService, $state, $stateParams, $ionicPopup, $localstorage) {
             $scope.data = {};
@@ -86,14 +86,24 @@ angular.module('partyTimeApp.controllers', [])
     .controller("PerfilController", ["$scope", "PerfilService", "$state", "$stateParams", "$ionicPopup", "$localstorage",
         function ($scope, PerfilService, $state, $stateParams, $ionicPopup, $localstorage) {
 
-            $scope.perfil = $localstorage.getObject("currentUser")
+            $scope.perfil = $localstorage.getObject("currentUser");
+
+            $scope.perfil.sexo = getSexo($scope.perfil.sexo);
+            
             /**
              * Redireciona o usuário para a página de convites, para visualizar todos os convites dele
              */
             $scope.showConvites = function () {
                 $state.go("tab.convites");
-            } 
-        
+            }
+            
+            /**
+             * Retorna se o sexo é macho ou mulé
+             */
+            function getSexo(s) {
+                return s.toLowerCase() == 'm' ? 'Macho' : "Mulé";
+            }
+            
             /**
              * Função que verifica e retorna quantos convites a pessoa possue pendente
              * @author Rafael R. Tonholo
@@ -236,11 +246,91 @@ angular.module('partyTimeApp.controllers', [])
             getConvites($scope.pessoa);
         }])
 
-    .controller("EventoController", function ($scope, $localstorage, EventoService) {
+    .controller("EventoController", function ($scope, $state, $localstorage, EventoService) {
+        //Recupera o usuário atual
         var currentUser = $localstorage.getObject("currentUser");
+
+        /**
+         * Função para redirecionar para adicionar um evento
+         * @author Kelvin
+         */
+        $scope.goAddEvent = function () {
+            $state.go('tab.eventos-add');
+        }
         
-        EventoService.getEventos(currentUser.id)
-        .success(function(eventos){
-            $scope.currentUserEvents = eventos;
-        });
-     });
+        /**
+         * Função para recarregar os dados da tela de eventos
+         * @author Kelvin
+         */
+        $scope.refreshEvents = function(){
+            RetrieveUserEvents();
+        }
+        
+        function RetrieveUserEvents() {
+            //Recupera os eventos do usuário atual
+            EventoService.getEventos(currentUser.id)
+                .success(function (eventos) {
+
+                    eventos.forEach(function (element) {
+                        element.data = (new Date(element.data)).toLocaleDateString()
+                    }, this);
+
+                    $scope.currentUserEvents = eventos;
+                });
+        }
+        //Realiza a primeira carga
+        RetrieveUserEvents();
+    })
+
+    .controller("AddEventoController", function ($scope, $state, $ionicPopup, $localstorage, EventoService) {
+        $scope.data = {};
+
+        /**
+         * Função para adicionar um novo evento
+         * @author Kelvin
+         */
+        $scope.addEvent = function () {
+            var currentUser = $localstorage.getObject("currentUser");
+
+            var evento = {
+                nome: $scope.data.nome,
+                endereco: $scope.data.endereco,
+                data: getDate($scope.data.dataEvento),
+                quantidade_maxima: $scope.data.quantidadeMaxima,
+                id_pessoa_criador: currentUser.id,
+                foto: $scope.data.linkUrl
+            };
+
+            EventoService.addEvento(currentUser.id, evento)
+                .success(function (res) {
+                    $state.go('tab.eventos')
+                })
+                .error(function (res) {
+
+                    if (res.length > 0) {
+                        var msg = "";
+                        for (var i = 0; i < res.length; i++) {
+                            msg += res[i].msg;
+                            msg += "<br/>"
+                        }
+
+                        var alertPopup = $ionicPopup.alert({
+                            title: "Erro",
+                            template: msg
+                        });
+
+                        alertPopup.then(function (res) { })
+                    }
+                });
+                
+            /**
+             * Função que transforma texto em uma data no formato aceito pela api
+             * yyyy-MM-dd
+             * @author Kelvin
+             */
+            function getDate(text) {
+                var date = new Date(text)
+                return date.toISOString().slice(0, 10);
+            }
+        };
+    });

@@ -40,7 +40,7 @@ app.use(
     connection(mysql, {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'root',
         database: 'party',
         debug: false //set true if you wanna see debug logger
     }, 'request')
@@ -253,10 +253,12 @@ app.route('/party/pessoa/:pessoa_id/evento')
         req.assert('nome', 'Nome é requerido').notEmpty();
         req.assert('endereco', 'Endereço é obrigatorio').notEmpty();
         req.assert('data', 'A Data é obrigatorio').isDate();
-        req.assert('quantidade_maxima', 'Quantidade máxima de participantes é obrigatoria').notEmpty().isInt();
+        req.assert('quantidade_maxima', 'Quantidade máxima de participantes é obrigatoria').notEmpty()
+        req.assert('quantidade_maxima', 'Quantidade máxima de participantes é obrigatoria').isInt();
 
         var errors = req.validationErrors();
         if (errors) {
+            console.log(errors);
             res.status(412).json(errors);
             return;
         }
@@ -324,7 +326,7 @@ app.route('/party/pessoa/:pessoa_id/evento')
                 "	   SELECT 1 FROM convite c WHERE c.id = pe.id_convite " +
                 "	   AND c.id_evento = ev.id " +
                 "   )" +
-                ");";
+                ") ORDER BY ev.data;";
 
             conn.query(query, [req.params.pessoa_id, req.params.pessoa_id], function (err, rows) {
 

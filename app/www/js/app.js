@@ -81,6 +81,16 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
             controller: "EventoController"
           }
         }
+      })
+      
+      .state('tab.eventos-add', {
+        url: '/eventos/add',
+        views: {
+          'tab-eventos': {
+            templateUrl: 'templates/add-evento.html',
+            controller: "AddEventoController"
+          }
+        }
       });
 
     // if none of the above states are matched, use this as the fallback
