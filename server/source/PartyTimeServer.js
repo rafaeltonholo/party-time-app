@@ -380,9 +380,8 @@ app.route("/party/pessoa/:pessoa_id/evento/participados")
         });
     });
 
-app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
-
-// Pega o evento de id x da pessoa y
+// Pega o evento de id x
+app.route("/party/evento/:evento_id")
     .get(function (req, res, next) {
 
         req.getConnection(function (err, conn) {
@@ -402,7 +401,9 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
                 res.send(rows);
             });
         });
-    })
+    });
+
+app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
     
 // Atualiza eventos
     .put(function (req, res, next) {
@@ -477,6 +478,41 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
 
         });
     }); // fim delete
+
+app.route('/party/evento/participantes/:evento_id')
+    .get(function (request, response, next) {
+        var evento_id = request.params.evento_id;
+
+        request.getConnection(function (err, conn) {
+
+            if (err) return next("Cannot Connect");
+
+            var query =
+                "SELECT * FROM pessoa p "
+                + "WHERE EXISTS( "
+                + "	SELECT 1 FROM participante_evento pe "
+                + "	WHERE pe.id_pessoa = p.id "
+                + "	AND EXISTS( "
+                + "		SELECT 1 FROM convite c "
+                + "		WHERE pe.id_convite = c.id "
+                + "		AND EXISTS( "
+                + "			SELECT 1 FROM evento ev "
+                + "			WHERE ev.id = c.id_evento AND id_evento = ? "
+                + "		) "
+                + "	) "
+                + ")";
+
+            conn.query(query, [evento_id], function (err, rows) {
+
+                if (err) {
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+
+                response.send(rows);
+            });
+        });
+    });
 
 app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_id')
 // Insere um convite para a pessoa do id x
