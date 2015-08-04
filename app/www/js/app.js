@@ -72,6 +72,15 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
             }
         }
     })
+    .state('tab.convites-details', {
+        url: '/convites/:eventoId',
+        views: {
+            'tab-convites': {
+                templateUrl: 'templates/evento-detail.html',
+                controller: 'EventoDetailController'
+            }
+        }
+    })
     .state('tab.eventos', {
         url: '/eventos',
         views: {
@@ -81,22 +90,30 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
             }
         }
     })
-
     .state('tab.eventos-add', {
         url: '/eventos/add',
         views: {
-          'tab-eventos': {
-            templateUrl: 'templates/add-evento.html',
-            controller: "AddEventoController"
-          }
+            'tab-eventos': {
+                templateUrl: 'templates/add-evento.html',
+                controller: "AddEventoController"
+            }
         }
-      })
+    })
     .state('tab.eventos-details', {
         url: '/eventos/:eventoId',
         views: {
             'tab-eventos': {
                 templateUrl: 'templates/evento-detail.html',
                 controller: 'EventoDetailController'
+            }
+        }
+    })
+    .state('tab.convites-add', {
+        url: '/convites/add',
+        views: {
+            'tab-eventos': {
+                templateUrl: 'templates/add-convite.html',
+                controller: "AddConviteController"
             }
         }
     });
