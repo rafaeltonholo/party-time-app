@@ -99,6 +99,15 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
             }
         }
     })
+    .state('tab.eventos-details', {
+        url: '/eventos/:eventoId',
+        views: {
+            'tab-eventos': {
+                templateUrl: 'templates/evento-detail.html',
+                controller: 'EventoDetailController'
+            }
+        }
+    })
     .state('tab.convites-add', {
         url: '/convites/add',
         views: {

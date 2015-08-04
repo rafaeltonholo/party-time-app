@@ -250,18 +250,10 @@ angular.module('partyTimeApp.controllers', [])
                     });
             };
 
-            $scope.abrirDetalhes = function (idEvento) {
-                $state.go("tab.eventos", { eventoId: idEvento });
-            }
-
             getConvites($scope.pessoa);
         }])
 
     .controller("EventoController", function ($scope, $state, $stateParams, $localstorage, EventoService) {
-        if ($stateParams.eventoId !== undefined && $stateParams.eventoId !== null) {
-            $state.go("tab.eventos-details", { eventoId: idEvento });
-        }
-
         //Recupera o usuário atual
         var currentUser = $localstorage.getObject("currentUser");
 
@@ -274,6 +266,15 @@ angular.module('partyTimeApp.controllers', [])
          */
         $scope.goAddEvent = function () {
             $state.go('tab.eventos-add');
+        }
+
+        /**
+         * Função para redirecionar para detalhes de um evento
+         *
+         * @author Rafael R. Tonholo
+         */
+        $scope.abrirDetalhes = function (idEvento) {
+            $state.go("tab.eventos-details", { eventoId: idEvento });
         }
 
         /**
@@ -379,6 +380,9 @@ angular.module('partyTimeApp.controllers', [])
         EventoService.get($stateParams.eventoId)
             .success(function (data) {
                 $scope.evento = data;
+                var date = new Date($scope.evento.data);
+                var data = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+                $scope.evento.data = data;
                 // Busca os participantes do evento solicitado
                 EventoService.getParticipantesEvento($scope.evento.id)
                     .success(function (data) {

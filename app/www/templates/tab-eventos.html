@@ -1,24 +1,47 @@
 <ion-view view-title="Eventos">
-  <ion-nav-buttons side="right">
-    <button class="button button-icon ion-refresh spinner" ng-click="refreshEvents()"></button>
-    <button class="button button-icon ion-plus-circled" ng-click="goAddEvent()"></button>
-  </ion-nav-buttons>
-  <ion-content>
-    <div class="card" ng-repeat="event in currentUserEvents">
-      <div class="item item-thumbnail-left">
-        <img src="../img/calendar.png" class="border" ng-src="{{event.foto}}" />
-        <h2>{{event.nome}}</h2>
-        <p>Pessoas: {{event.quantidade_maxima}}</p>
-        <p>Data: {{event.data}}</div>
-      <div class="item item-divider">
-        <label>Endereço: {{event.endereco}}</label>
-      </div>
-      <div class="item item-divider">
-        <button class="button button-block button-positive" ng-click="goInvitePeople({{event.id}})">
-          <i class="ion-paper-airplane"></i>
-          <span>Convidar Pessoas</span>
-        </button>
-      </div>
-    </div>
-  </ion-content>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon ion-refresh spinner" ng-click="refreshEvents()"></button>
+        <button class="button button-icon ion-plus-circled" ng-click="goAddEvent()"></button>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="event in currentUserEvents" href="#/tab/eventos/{{event.id}}" class="evento-list">
+                <div class="card">
+                    <div class="item item-thumbnail-left">
+                        <img src="../img/calendar.png" class="border" ng-src="{{event.foto}}" />
+                        <h2>{{event.nome}}</h2>
+                        <p>Pessoas: {{event.quantidade_maxima}}</p>
+                        <p>Data: {{event.data}}
+                    </div>
+                    <div class="item item-divider">
+                        <label>Endereço: {{event.endereco}}</label>
+                    </div>
+                    <div class="item item-divider">
+                        <button class="button button-block button-positive" ng-click="goInvitePeople({{event.id}})">
+                            <i class="ion-paper-airplane"></i>
+                            <span>Convidar Pessoas</span>
+                        </button>
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+
+        <!--<div class="card" ng-repeat="event in currentUserEvents" ng-click="{{abrirDetalhes(event.id)}}">
+            <div class="item item-thumbnail-left">
+                <img src="../img/calendar.png" class="border" ng-src="{{event.foto}}" />
+                <h2>{{event.nome}}</h2>
+                <p>Pessoas: {{event.quantidade_maxima}}</p>
+                <p>Data: {{event.data}}
+            </div>
+            <div class="item item-divider">
+                <label>Endereço: {{event.endereco}}</label>
+            </div>
+            <div class="item item-divider">
+                <button class="button button-block button-positive" ng-click="goInvitePeople({{event.id}})">
+                    <i class="ion-paper-airplane"></i>
+                    <span>Convidar Pessoas</span>
+                </button>
+            </div>
+        </div>-->
+    </ion-content>
 </ion-view>

@@ -391,7 +391,8 @@ app.route("/party/evento/:evento_id")
 
             if (err) return next("Cannot Connect");
 
-            var query = "SELECT ev.* FROM evento AS ev WHERE id = ?";
+            var query = "SELECT ev.*, p.nome anfitriao FROM evento AS ev " +
+                        "INNER JOIN pessoa p ON p.id = ev.id_pessoa_criador WHERE ev.id = ?";
 
             //verificar o comportamento de quando envia um parametro nulo
             conn.query(query, [evento_id], function (err, rows) {
