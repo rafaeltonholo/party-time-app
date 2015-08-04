@@ -250,10 +250,18 @@ angular.module('partyTimeApp.controllers', [])
                     });
             };
 
+            $scope.abrirDetalhes = function (idEvento) {
+                $state.go("tab.eventos", { eventoId: idEvento });
+            }
+
             getConvites($scope.pessoa);
         }])
 
-    .controller("EventoController", function ($scope, $state, $localstorage, EventoService) {
+    .controller("EventoController", function ($scope, $state, $stateParams, $localstorage, EventoService) {
+        if ($stateParams.eventoId !== undefined && $stateParams.eventoId !== null) {
+            $state.go("tab.eventos-details", { eventoId: idEvento });
+        }
+
         //Recupera o usuário atual
         var currentUser = $localstorage.getObject("currentUser");
 
@@ -394,7 +402,7 @@ angular.module('partyTimeApp.controllers', [])
             var currentUser = $localstorage.getObject("currentUser");
             var currentEventId = Number($localstorage.get('currentEventId'));
 
-            var pessoaConvidadaId = $scope.pessoaConvidada;
+            var pessoaConvidadaId = $scope.pessoaConvidada.id;
 
             ConviteService.addConvite(currentUser.id, currentEventId, pessoaConvidadaId)
                 .success(function (res) {

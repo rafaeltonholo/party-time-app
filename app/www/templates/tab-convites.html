@@ -2,7 +2,7 @@
     <ion-content>
         <ion-list>
             <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="convite in convites" type="item-text-wrap"
-                      href="#/tab/eventos/{{convite.id_evento}}">
+                      ng-click="abrirDetalhes(convite.id_evento)">
                 <img src="../img/calendar.png" ng-src="{{convite.foto}}">
                 <h3>{{convite.nome}}</h3>
                 <p>{{convite.convidado}}</p>

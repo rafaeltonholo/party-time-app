@@ -552,6 +552,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
                     var retorno;
 
                     if (count == 0) {
+                        console.log(data);
                         conn.query("INSERT INTO convite set ? ", data, function (err, rows) {
 
                             if (err) {
