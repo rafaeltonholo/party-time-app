@@ -21,9 +21,9 @@
                     <ion-item ng-repeat="evento in eventosParticipados" type="item-text-wrap" href="#">
                         <a class="item clear-padding">
                          <h3>{{evento.nome}}</h3>
-                         <p>Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
-                         <p>{{evento.data}}</p>
-                         <p>{{evento.endereco}}</p>
+                         <p ng-show="{{evento.show}}">Participantes: {{evento.participantes}} / {{evento.quantidade_maxima}}</p>
+                         <p ng-show="{{evento.show}}">{{evento.data}}</p>
+                         <p ng-show="{{evento.show}}">{{evento.endereco}}</p>
                      </a>
                     </ion-item>
                 </div>

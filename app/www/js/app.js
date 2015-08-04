@@ -10,80 +10,79 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeApp.services'])
 
-  .run(function ($ionicPlatform) {
+.run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
-      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-      // for form inputs)
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        cordova.plugins.Keyboard.disableScroll(true);
+        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+        // for form inputs)
+        if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            cordova.plugins.Keyboard.disableScroll(true);
 
-      }
-      if (window.StatusBar) {
-        // org.apache.cordova.statusbar required
-        StatusBar.styleLightContent();
-      }
+        }
+        if (window.StatusBar) {
+            // org.apache.cordova.statusbar required
+            StatusBar.styleLightContent();
+        }
     });
-  })
+})
 
-  .config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider) {
 
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
     $stateProvider
-      .state("singup", {
+    .state("singup", {
         url: "/login/singup",
         controller: "LoginController",
         templateUrl: "templates/login-singup.html"
-      })
-      .state("singin", {
+    })
+    .state("singin", {
         url: "/login/singin",
         controller: "LoginController",
         templateUrl: "templates/login-singin.html"
-      })
-    
+    })
+
     // setup an abstract state for the tabs directive
-      .state('tab', {
+    .state('tab', {
         url: '/tab',
         abstract: true,
         templateUrl: 'templates/tabs.html'
-      })
+    })
 
     // Each tab has its own nav history stack:
 
-      .state('tab.perfil', {
+    .state('tab.perfil', {
         url: '/perfil',
         views: {
-          'tab-perfil': {
-            templateUrl: 'templates/tab-perfil.html',
-            controller: 'PerfilController'
-          }
+            'tab-perfil': {
+                templateUrl: 'templates/tab-perfil.html',
+                controller: 'PerfilController'
+            }
         }
-      })
+    })
 
-      .state('tab.convites', {
+    .state('tab.convites', {
         url: '/convites',
         views: {
-          'tab-convites': {
-            templateUrl: 'templates/tab-convites.html',
-            controller: 'ConviteController'
-          }
+            'tab-convites': {
+                templateUrl: 'templates/tab-convites.html',
+                controller: 'ConviteController'
+            }
         }
-      })
-
-      .state('tab.eventos', {
+    })
+    .state('tab.eventos', {
         url: '/eventos',
         views: {
-          'tab-eventos': {
-            templateUrl: 'templates/tab-eventos.html',
-            controller: "EventoController"
-          }
+            'tab-eventos': {
+                templateUrl: 'templates/tab-eventos.html',
+                controller: "EventoController"
+            }
         }
-      })
-      
-      .state('tab.eventos-add', {
+    })
+
+    .state('tab.eventos-add', {
         url: '/eventos/add',
         views: {
           'tab-eventos': {
@@ -91,9 +90,18 @@ angular.module('partyTimeApp', ['ionic', 'partyTimeApp.controllers', 'partyTimeA
             controller: "AddEventoController"
           }
         }
-      });
+      })
+    .state('tab.eventos-details', {
+        url: '/eventos/:eventoId',
+        views: {
+            'tab-eventos': {
+                templateUrl: 'templates/evento-detail.html',
+                controller: 'EventoDetailController'
+            }
+        }
+    });
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login/singin');
 
-  });
+});

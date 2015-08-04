@@ -1,0 +1,26 @@
+<ion-view view-title="Detalhe Evento">
+    <ion-content class="padding">
+        <div class="card">
+            <div class="item item-avatar">
+                <img src="../img/calendar.png" class="border" ng-src="{{evento.foto}}" />
+                <h2>{{evento.nome}}</h2>
+                <p>{{evento.endereco}}</p>
+                <p>{{evento.quantidade_maxima}}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="item item-divider">Lista de convidados</div>
+            <div class="item item-text-wrap">
+                <div class="list">
+                    <ion-item ng-repeat="pessoa in convidadosEvento" type="item-text-wrap" href="#">
+                        <a class="item clear-padding">
+                            <h3>{{pessoa.nome}}</h3>
+                            <p ng-show="{{pessoa.hide !== true}}">Idade: {{pessoa.idade}}</p>
+                            <p ng-show="{{pessoa.hide !== true}}">Sexo: {{pessoa.sexo}}</p>
+                        </a>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

@@ -17,8 +17,10 @@ function ServerAPI() {
     pessoa: serverRootUrl + "pessoa",
     login: serverRootUrl + "pessoa/login",
     pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
-    
-    addEvento : serverRootUrl + "pessoa/{id_pessoa}/evento"
+    evento: serverRootUrl + "evento/{id_evento}",
+    eventoParticipantes: serverRootUrl + "evento/participantes/{id_evento}",
+    pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
+    addEvento: serverRootUrl + "pessoa/{id_pessoa}/evento"
   }
 };
 
@@ -101,12 +103,31 @@ angular.module('partyTimeApp.services', [])
   }])
 
   .factory("EventoService", ["$http", function ($http) {
-    return {
-      getEventos: function (idPessoa) {
-        return $http.get(api.pessoaEventos.replace('{id_pessoa}', idPessoa), postConfig);
-      },
-      addEvento: function (idPessoa, data){
-        return $http.post(api.addEvento.replace('{id_pessoa}', idPessoa), data, postConfig)
-      }
+      return {
+        /**
+         * Busca um evento pelo seu id
+         *
+         * @author Rafael R. Tonholo
+         * @param idEvento - id do evento
+         */
+        get: function(idEvento) {
+            return $http.get(api.evento.replace("{id_evento}", idEvento), postConfig);
+        },
+        getEventos: function (idPessoa) {
+            return $http.get(api.pessoaEventos.replace('{id_pessoa}', idPessoa), postConfig);
+        },
+
+        /**
+         * Busca os participantes de um evento
+         *
+         * @author Rafael R. Tonholo
+         * @param idEvento - id do evento
+         */
+        getParticipantesEvento: function (idEvento) {
+            return $http.get(api.eventoParticipantes.replace("{id_evento}", idEvento), postConfig);
+        },
+		addEvento: function (idPessoa, data){
+        	return $http.post(api.addEvento.replace('{id_pessoa}', idPessoa), data, postConfig)
+      	}
     };
   }]);

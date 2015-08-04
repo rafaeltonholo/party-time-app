@@ -40,7 +40,7 @@ app.use(
     connection(mysql, {
         host: 'localhost',
         user: 'root',
-        password: 'root',
+        password: '',
         database: 'party',
         debug: false //set true if you wanna see debug logger
     }, 'request')
@@ -382,10 +382,10 @@ app.route("/party/pessoa/:pessoa_id/evento/participados")
         });
     });
 
-app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
-
-// Pega o evento de id x da pessoa y
+// Pega o evento de id x
+app.route("/party/evento/:evento_id")
     .get(function (req, res, next) {
+        var evento_id = req.params.evento_id;
 
         req.getConnection(function (err, conn) {
 
@@ -394,17 +394,19 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
             var query = "SELECT ev.* FROM evento AS ev WHERE id = ?";
 
             //verificar o comportamento de quando envia um parametro nulo
-            conn.query(query, [req.params.pessoa_id], function (err, rows) {
+            conn.query(query, [evento_id], function (err, rows) {
 
                 if (err) {
                     console.log(err);
                     return next("Mysql error, check your query");
                 }
 
-                res.send(rows);
+                res.send(rows[0]);
             });
         });
-    })
+    });
+
+app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
     
 // Atualiza eventos
     .put(function (req, res, next) {
@@ -480,6 +482,43 @@ app.route("/party/pessoa/:pessoa_id/evento/:evento_id")
         });
     }); // fim delete
 
+app.route('/party/evento/participantes/:evento_id')
+    .get(function (request, response, next) {
+        var evento_id = request.params.evento_id;
+        console.log(evento_id);
+        request.getConnection(function (err, conn) {
+
+            if (err) return next("Cannot Connect");
+
+            var query =
+                "SELECT * FROM pessoa p "
+                + "WHERE EXISTS( "
+                + "	SELECT 1 FROM participante_evento pe "
+                + "	WHERE pe.id_pessoa = p.id "
+                + "	AND EXISTS( "
+                + "		SELECT 1 FROM convite c "
+                + "		WHERE pe.id_convite = c.id "
+                + "		AND EXISTS( "
+                + "			SELECT 1 FROM evento ev "
+                + "			WHERE ev.id = c.id_evento AND id_evento = ? "
+                + "		) "
+                + "	) "
+                + ")";
+
+            conn.query(query, [evento_id], function (err, rows) {
+
+                if (err) {
+                    console.log(err);
+                    return next("Mysql error, check your query");
+                }
+
+                console.log(rows);
+
+                response.send(rows);
+            });
+        });
+    });
+
 app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_id')
 // Insere um convite para a pessoa do id x
     .post(function (req, res, next) {
@@ -492,7 +531,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
             id_evento: evento_id,
             id_pessoa: pessoa_id,
             id_pessoa_convidado: pessoa_convidada_id,
-            aceito: 1
+            aceito: -1
         };
 
 
@@ -574,7 +613,7 @@ app.route("/party/pessoa/:pessoa_id/convite")
                 "	ev.data, ev.foto, p.nome nome_convidado " +
                 "FROM convite c " +
                 "INNER JOIN evento ev ON ev.id = c.id_evento " +
-                "LEFT JOIN pessoa p ON ev.id = c.id_pessoa_convidado = p.id " +
+                "LEFT JOIN pessoa p ON c.id_pessoa_convidado = p.id " +
                 "WHERE (id_pessoa = ? OR id_pessoa_convidado = ?) AND aceito = -1";
 
             //verificar o comportamento de quando envia um parametro nulo

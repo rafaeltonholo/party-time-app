@@ -1,3 +1,5 @@
+"use strict";
+
 /// <reference path="../../../typings/angularjs/angular.d.ts"/>
 angular.module('partyTimeApp.controllers', [])
 
@@ -66,6 +68,10 @@ angular.module('partyTimeApp.controllers', [])
 
                 LoginService.singup(pessoa)
                     .success(function (data) {
+                        //Salva usuario atual no localStorage
+                        if (data.length > 0)
+                            $localstorage.setObject("currentUser", data[0]);
+
                         $scope.showAlert("Cadastro de Pessoa", "Pessoa cadastrada com sucesso!", function () {
                             $scope.redirect("tab.perfil");
                         });
@@ -121,7 +127,7 @@ angular.module('partyTimeApp.controllers', [])
                     });
             }
 
-            var eventoVazio = [{ nome: "Nenhum evento participado" }];
+            var eventoVazio = [{ nome: "Nenhum evento participado", show: false }];
         
             /**
              * Função que busca todos os eventos já participados pela pessoa
@@ -135,6 +141,7 @@ angular.module('partyTimeApp.controllers', [])
                         if (data.length === 0) {
                             $scope.eventosParticipados = eventoVazio;
                         } else {
+                            data.show = true;
                             $scope.eventosParticipados = data;
                         }
                     })
@@ -151,8 +158,8 @@ angular.module('partyTimeApp.controllers', [])
             getEventosParticipados($scope.perfil.id);
         }])
 
-    .controller("ConviteController", ["$scope", "ConviteService", "$ionicPopup", "$localstorage",
-        function ($scope, ConviteService, $ionicPopup, $localstorage) {
+    .controller("ConviteController", ["$scope", "ConviteService", "$ionicPopup", "$localstorage", "$state",
+        function ($scope, ConviteService, $ionicPopup, $localstorage, $state) {
 
             $scope.pessoa = $localstorage.getObject("currentUser")
 
@@ -190,7 +197,7 @@ angular.module('partyTimeApp.controllers', [])
                         angular.forEach(returnedData, function (value, key) {
                             value.owner = data.pessoa_id == value.id_pessoa;
                             value.convidado = value.owner ? "Anfitrião" : "Convidado";
-                            if (value.owner) value.nome_convidado = "Nome do convidado: " + value.nome_convidado;
+                            value.nome_convidado = (value.owner ? "Nome do convidado: " : "Anfitrião: ") + value.nome_convidado;
                         });
 
                         $scope.convites = returnedData;
@@ -333,4 +340,35 @@ angular.module('partyTimeApp.controllers', [])
                 return date.toISOString().slice(0, 10);
             }
         };
+    })
+    .controller("EventoDetailController", function ($scope, $stateParams, $state, $localstorage, EventoService) {
+        $scope.evento = {};
+        $scope.convidadosEvento = [];
+
+        var convidadosVazio = [{ nome: "Não há convidados para este evento!", hide: true }];
+
+        // Busca os dados do evento.
+        EventoService.get($stateParams.eventoId)
+            .success(function (data) {
+                $scope.evento = data;
+                // Busca os participantes do evento solicitado
+                EventoService.getParticipantesEvento($scope.evento.id)
+                    .success(function (data) {
+                        if (data.length === 0) {
+                            $scope.convidadosEvento = convidadosVazio;
+                        } else {
+                            $scope.convidadosEvento = data;
+                            $scope.convidadosEvento.forEach(function (element) {
+                                element.sexo = element.sexo.toLowerCase() === "m" ? "Macho" : "Muié";
+                            })
+                        }
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.convidadosEvento = convidadosVazio;
+                    });
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data);
+            });
+
     });
