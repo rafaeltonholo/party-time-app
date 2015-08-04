@@ -250,6 +250,9 @@ angular.module('partyTimeApp.controllers', [])
         //Recupera o usuário atual
         var currentUser = $localstorage.getObject("currentUser");
 
+        //Realiza a primeira carga
+        RetrieveUserEvents();
+
         /**
          * Função para redirecionar para adicionar um evento
          * @author Kelvin
@@ -262,12 +265,23 @@ angular.module('partyTimeApp.controllers', [])
          * Função para recarregar os dados da tela de eventos
          * @author Kelvin
          */
-        $scope.refreshEvents = function(){
+        $scope.refreshEvents = function () {
             RetrieveUserEvents();
         }
-        
+
+        /**
+         * Função para redirecionar para compartilhar convidar outras pessoas
+         * @author Kelvin
+         */
+        $scope.goInvitePeople = function () {
+            $state.go('tab.convites-add')
+        }
+
+        /**
+         * Recupera os eventos do usuário atual
+         * @author Kelvin
+         */
         function RetrieveUserEvents() {
-            //Recupera os eventos do usuário atual
             EventoService.getEventos(currentUser.id)
                 .success(function (eventos) {
 
@@ -278,8 +292,6 @@ angular.module('partyTimeApp.controllers', [])
                     $scope.currentUserEvents = eventos;
                 });
         }
-        //Realiza a primeira carga
-        RetrieveUserEvents();
     })
 
     .controller("AddEventoController", function ($scope, $state, $ionicPopup, $localstorage, EventoService) {
@@ -333,4 +345,20 @@ angular.module('partyTimeApp.controllers', [])
                 return date.toISOString().slice(0, 10);
             }
         };
+    })
+
+    .controller("AddConviteController", function ($scope, PessoaService) {
+
+        $scope.pessoaConvidada = {};
+
+        $scope.selecionarPessoa = function () {
+            var pessoaConvidada = $scope.pessoaConvidada;
+            debugger
+        }
+
+        PessoaService.getPessoas()
+            .success(function (res) {
+                $scope.pessoas = res;
+            });
+
     });

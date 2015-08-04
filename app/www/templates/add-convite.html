@@ -1,0 +1,14 @@
+<ion-view view-title="Convidar pessoas">
+	<ion-nav-buttons side="right">
+        <button class="button button-icon ion-android-send" ng-click="selecionarPessoa()"></button>
+    </ion-nav-buttons>
+	<ion-content>
+		<div ng-repeat="pessoa in pessoas">
+			<label class="item item-radio">
+				<input type="radio" name="pessoaConvidada" value="{{pessoa.id}}">
+				<div class="item-content">{{pessoa.nome}}</div>
+				<i class="radio-icon ion-checkmark"></i>
+			</label>
+		</div>
+	</ion-content>
+</ion-view>

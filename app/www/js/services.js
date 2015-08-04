@@ -18,7 +18,8 @@ function ServerAPI() {
     login: serverRootUrl + "pessoa/login",
     pessoaEventos: serverRootUrl + "pessoa/{id_pessoa}/evento",
     
-    addEvento : serverRootUrl + "pessoa/{id_pessoa}/evento"
+    //Eventos
+    addEvento: serverRootUrl + "pessoa/{id_pessoa}/evento"
   }
 };
 
@@ -100,13 +101,29 @@ angular.module('partyTimeApp.services', [])
     };
   }])
 
+/**
+ * Servico de consultas de eventos
+ * @author Kelvin
+ */
   .factory("EventoService", ["$http", function ($http) {
     return {
       getEventos: function (idPessoa) {
         return $http.get(api.pessoaEventos.replace('{id_pessoa}', idPessoa), postConfig);
       },
-      addEvento: function (idPessoa, data){
+      addEvento: function (idPessoa, data) {
         return $http.post(api.addEvento.replace('{id_pessoa}', idPessoa), data, postConfig)
       }
     };
+  }])
+  
+  /**
+   * Serviço de consultas de pessoas
+   * @author Kelvin
+   */
+  .factory("PessoaService", ["$http", function ($http) {
+    return {
+      getPessoas: function () {
+        return $http.get(api.pessoa, postConfig);
+      }
+    }
   }]);
