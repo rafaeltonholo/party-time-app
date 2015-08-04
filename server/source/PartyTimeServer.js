@@ -288,7 +288,7 @@ app.route('/party/pessoa/:pessoa_id/evento')
                     }
 
                     var count = rows[0].count;
-                    
+
                     if (count == 0) {
                         console.log('dados a serem inseridos:');
                         console.log(data);
@@ -492,7 +492,7 @@ app.route('/party/pessoa/:pessoa_id/evento/:evento_id/convite/:pessoa_convidada_
             id_evento: evento_id,
             id_pessoa: pessoa_id,
             id_pessoa_convidado: pessoa_convidada_id,
-            aceito: 1
+            aceito: 0
         };
 
 

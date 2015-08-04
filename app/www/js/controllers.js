@@ -273,7 +273,8 @@ angular.module('partyTimeApp.controllers', [])
          * Função para redirecionar para compartilhar convidar outras pessoas
          * @author Kelvin
          */
-        $scope.goInvitePeople = function () {
+        $scope.goInvitePeople = function (eventId) {
+            $localstorage.set('currentEventId', eventId)
             $state.go('tab.convites-add')
         }
 
@@ -347,13 +348,20 @@ angular.module('partyTimeApp.controllers', [])
         };
     })
 
-    .controller("AddConviteController", function ($scope, PessoaService) {
+    .controller("AddConviteController", function ($scope, $localstorage, $stateParams, $state, ConviteService, PessoaService) {
 
-        $scope.pessoaConvidada = {};
+        $scope.pessoaConvidada = {}
 
         $scope.selecionarPessoa = function () {
-            var pessoaConvidada = $scope.pessoaConvidada;
-            debugger
+            var currentUser = $localstorage.getObject("currentUser");
+            var currentEventId = Number($localstorage.get('currentEventId'));
+
+            var pessoaConvidadaId = $scope.pessoaConvidada;
+            
+            ConviteService.addConvite(currentUser.id, currentEventId, pessoaConvidadaId)
+                .success(function (res) {
+                    $state.go('tab.eventos')
+                });
         }
 
         PessoaService.getPessoas()
