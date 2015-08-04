@@ -288,7 +288,7 @@ app.route('/party/pessoa/:pessoa_id/evento')
                     }
 
                     var count = rows[0].count;
-                    
+
                     if (count == 0) {
                         console.log('dados a serem inseridos:');
                         console.log(data);
